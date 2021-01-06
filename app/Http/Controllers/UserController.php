@@ -36,7 +36,15 @@ class UserController extends Controller
         // return view('users.usersList')->with([
         //     'users' => $users,
         //     ]);
-        $users = User::latest()->get();
+        // $users = User::latest()->get();
+        $name = (!empty($_GET["name"])) ? ($_GET["name"]) : ('');
+        $email = (!empty($_GET["email"])) ? ($_GET["email"]) : ('');
+        $from = (!empty($_GET["from"])) ? ($_GET["from"]) : ('');
+        $to = (!empty($_GET["to"])) ? ($_GET["to"]) : ('');
+        $users = User::whereNull('deleted_user_id');
+        if($name != '') $users->where('name', 'LIKE', '%' . $name . '%');
+        if($email != '') $users ->where('email', 'LIKE', '%' . $email . '%');
+        if($from != '' && $to != '') $users->whereBetween('created_at', [$from.' 00:00:00',$to.' 23:59:59']);
         if ($request->ajax()) {
             return DataTables::of($users)
                 ->addIndexColumn()

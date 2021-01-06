@@ -9,14 +9,14 @@
             <div class="row">
                 <div class="col"></div>
                 <div class="col">Name</div>
-                <div class="col"><input type="text" name="name" class="form-control" placeholder=""></div>
+                <div class="col"><input type="text" id="name" name="name" class="form-control" placeholder=""></div>
                 <div class="col">Email</div>
-                <div class="col"><input type="text" name="email" class="form-control" placeholder=""></div>
+                <div class="col"><input type="text" id="email" name="email" class="form-control" placeholder=""></div>
                 <div class="col">From</div>
                 <div class="col"><input type="text" name="from" id="from" class="form-control" placeholder=""></div>
                 <div class="col">To</div>
                 <div class="col"><input type="text" name="to" id="to" class="form-control" placeholder=""></div>
-                <div class="col"><a class="btn btn-primary" href="{{ route('users.index') }}"> Search</a></div>
+                <div class="col"><a class="btn btn-primary" id="searchBtn"> Search</a></div>
             </div>
 
             @if ($message = Session::get('success'))
@@ -95,7 +95,16 @@
             searching: false,
             processing: true,
             serverSide: true,
-            ajax: "{{ route('users.index') }}",
+            ajax:{
+                url: "{{ route('users.index') }}",
+                type: 'GET',
+                data: function(d) {
+                    d.name = $('#name').val();
+                    d.email = $('#email').val();
+                    d.from = $('#from').val().replace(/(\d\d)\/(\d\d)\/(\d{4})/, "$3-$1-$2");
+                    d.to = $('#to').val().replace(/(\d\d)\/(\d\d)\/(\d{4})/, "$3-$1-$2");
+                }
+            },
             columns: [{
                     data: 'name'
                 },
@@ -129,6 +138,9 @@
                     searchable: false
                 },
             ]
+        });
+        $('#searchBtn').click(function() {
+            $('#user_table').DataTable().draw(true);
         });
     });
 
