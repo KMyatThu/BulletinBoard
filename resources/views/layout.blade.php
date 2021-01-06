@@ -5,7 +5,9 @@
   <title>OJT BulletinBoard</title>
 
   <!-- Scripts -->
-  <script src="{{ asset('js/app.js') }}" defer></script>
+  <!-- <script src="{{ asset('js/app.js') }}" defer></script> -->
+  <!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 
   <!-- Fonts -->
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -13,7 +15,8 @@
 
   <!-- Styles -->
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -38,7 +41,7 @@
             {{ Auth::user()->name }}
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{{ route('users.show', Auth::user()->id ) }}">Profile</a></li>
+            <li><a class="dropdown-item" href="/profile/{{Auth::user()->id}}">Profile</a></li>
             <li>
               <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -56,6 +59,7 @@
   </nav>
   <div class="container">
     @yield('content')
+    @yield('javascript')
   </div>
 
 </body>

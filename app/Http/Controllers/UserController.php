@@ -7,9 +7,12 @@ use App\User;
 use DateTime;
 use Intervention\Image\Facades\Image;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
@@ -23,7 +26,7 @@ class UserController extends Controller
         $this->middleware('auth');
     }
     
-    public function index()
+    public function index(Request $request)
     {
         // $users = User::whereNull('deleted_user_id');
         // $users = User::all();
@@ -33,8 +36,33 @@ class UserController extends Controller
         // return view('users.usersList')->with([
         //     'users' => $users,
         //     ]);
-        $users = User::whereNull('deleted_user_id')->paginate(5);
-        return view('users.usersList', compact('users'));
+        $users = User::latest()->get();
+        if ($request->ajax()) {
+            return DataTables::of($users)
+                ->addIndexColumn()
+                ->addColumn('name', function ($row) {
+                    return '<a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/users/'. $row->id .'">'. $row->name .'</a>';
+                    // return '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="{{ $row->id }}" class="edit btn btn-success edit-product" >'. $row->title .'</a>';
+                })
+                ->addColumn('action', function ($row) {
+                    return '<a data-toggle="modal" id="deleteButton" data-target="#deleteModal" data-attr="/userDeleteModal/'. $row->id .'" class="btn btn-danger">Delete</a>';
+                })
+                ->editColumn('dob', function ($row) 
+                {
+                return $row->dob == null ? '' : date('Y/m/d', strtotime($row->dob));
+                })
+                ->editColumn('created_at', function ($row) 
+                {
+                return date('Y/m/d', strtotime($row->created_at) );
+                })
+                ->editColumn('updated_at', function ($row) 
+                {
+                return date('Y/m/d', strtotime($row->updated_at) );
+                })
+                ->rawColumns(['name'],['action'])
+                ->make(true);
+        }
+        return view('users.usersList');
     }
 
     public function create()
@@ -47,6 +75,13 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required',
+            'password' => ['required'],
+            'confirm_password' => ['same:password'],
+            'type' => 'required',
+            'phone' => 'required',
+            'dob' => 'required',
+            'address' => 'required',
+            'file' => 'required'
         ]);
         $user = new User($request->all());
         if ($request->hasFile('file')) {
@@ -64,13 +99,14 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required',
+            'email' => 'required'
         ]);
         $user = new User($request->all());
         $user->password = Hash::make($user->password);
-        $user->type = $user->type == 'Admin' ? 1 : 0;
-        $user->create_user_id = 1;
-        $user->updated_user_id = 1;
+        $user->type = $user->type == 'Admin' ? 0 : 1;
+        $user->dob = new DateTime($user->dob);
+        $user->create_user_id = auth()->user()->id;
+        $user->updated_user_id = auth()->user()->id;
         $user->created_at = new DateTime();
         $user->updated_at = new DateTime();
 
@@ -95,7 +131,6 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        dd("here");
         return view('users.userDetail', compact('user'));
     }
 
@@ -119,11 +154,10 @@ class UserController extends Controller
             $user->profile = $filename;
         }
 
-        $user->type = $user->type == 'Admin' ? 1 : 0;
-        $user->create_user_id = 1;
-        $user->updated_user_id = 1;
+        $user->type = $user->type == 'Admin' ? 0 : 1;
+        $user->dob = Carbon::parse($user->dob);
+        $user->updated_user_id = auth()->user()->id;
         $user->updated_at = new DateTime();
-
         User::where('id', $user->id)->update([
             'name' => $user['name'],
             'email' => $user['email'],
@@ -132,7 +166,6 @@ class UserController extends Controller
             'address' => $user['address'],
             'dob' => $user['dob'],
             'profile' => $user['profile'],
-            'create_user_id' => $user['create_user_id'],
             'updated_user_id' => $user['updated_user_id'],
             'updated_at' => $user['updated_at']
         ]);
@@ -143,7 +176,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        dd("destroy");
+        dd($user);
         $user->deleted_at = new DateTime();
         User::where('id', $user->id)->update([
             'deleted_user_id' => '1',
@@ -176,5 +209,10 @@ class UserController extends Controller
     public function userDeleteModal(User $user)
     {
         return view('users.userDeleteModal', compact('user'));
+    }
+
+    public function profile(User $user)
+    {
+        return view('users.profile', compact('user'));
     }
 }

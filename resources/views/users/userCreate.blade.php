@@ -5,16 +5,9 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    Change Password
+                    Register
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-12 margin-tb">
-                            <div class="pull-left">
-                                <h2>Register</h2>
-                            </div>
-                        </div>
-                    </div>
 
                     @if ($errors->any())
                     <div class="alert alert-danger">
@@ -29,69 +22,73 @@
 
                     <form action="/userCreateConfirm" method="POST" enctype="multipart/form-data">
                         @csrf
-
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <strong>Name:</strong>
-                                    <input type="text" name="name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <strong>E-mail-Address:</strong>
-                                    <input type="text" name="email" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <strong>Password:</strong>
-                                    <input type="password" id="password" name="password" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <strong>Confirm Password:</strong>
-                                    <input type="password" id="confirm_password" name="password_confirmation" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <strong>Type:</strong>
-                                    <input type="text" name="type" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <strong>Phone:</strong>
-                                    <input type="text" name="phone" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <strong>Date of Birth:</strong>
-                                    <input type="text" name="dob" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <strong>Address:</strong>
-                                    <input type="text" name="address" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <strong>Profile:</strong>
-                                    <div class="custom-file text-left">
-                                        <input type="file" name="file" class="custom-file-input" id="customFile">
-                                        <label class="custom-file-label" for="customFile">Choose file</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                                <button type="submit" class="btn btn-primary">Register</button>
+                        <!--  -->
+                        <div class="form-group row">
+                            <label for="title" class="col-md-4 col-form-label text-md-right">Name</label>
+                            <div class="col-md-6">
+                                <input type="text" name="name" class="form-control">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-md-4 col-form-label text-md-right">E-mail-Address</label>
+                            <div class="col-md-6">
+                                <input type="text" name="email" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-md-4 col-form-label text-md-right">Password</label>
+                            <div class="col-md-6">
+                                <input type="password" name="password" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-md-4 col-form-label text-md-right">Confirm Password</label>
+                            <div class="col-md-6">
+                                <input type="password" name="confirm_password" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-md-4 col-form-label text-md-right">Type</label>
+                            <div class="col-md-6">
+                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="type">
+                                <option value="0" selected>Admin</option>
+                                <option value="1">User</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-md-4 col-form-label text-md-right">Phone</label>
+                            <div class="col-md-6">
+                                <input type="text" name="phone" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-md-4 col-form-label text-md-right">Date Of Birth</label>
+                            <div class="col-md-6">
+                                <input type="text" name="dob" class="form-control" id="dob" placeholder="mm/dd/yyyy" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-md-4 col-form-label text-md-right">Address</label>
+                            <div class="col-md-6">
+                                <input type="text" name="address" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-md-4 col-form-label text-md-right">Profile</label>
+                            <div class="col-md-6">
+                                <!-- <input type="file" name="file" class="custom-file-input" id="customFile">
+                                <label class="custom-file-label" for="customFile">Choose file</label> -->
+                                <input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-0">
+                            <div class="col-md-8 offset-md-4">
+                                <button type="submit" class="btn btn-primary">Register</button>
+                                <input type="reset" class="btn btn-secondary" value="Clear" />
+                            </div>
+                        </div>
+                        <!--  -->
                     </form>
                 </div>
             </div>
@@ -99,3 +96,14 @@
     </div>
 </div>
 @endsection
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $( function() {
+    $( "#dob" ).datepicker({  
+       format: 'mm/dd/yyyy'
+     });  
+  } );
+  </script>

@@ -8,12 +8,15 @@
         <div class="card-body">
             <div class="row">
                 <div class="col"></div>
-                <div class="col">keyword</div>
-                <div class="col"><input type="text" name="keyword" class="form-control" placeholder=""></div>
+                <div class="col">Name</div>
+                <div class="col"><input type="text" name="name" class="form-control" placeholder=""></div>
+                <div class="col">Email</div>
+                <div class="col"><input type="text" name="email" class="form-control" placeholder=""></div>
+                <div class="col">From</div>
+                <div class="col"><input type="text" name="from" id="from" class="form-control" placeholder=""></div>
+                <div class="col">To</div>
+                <div class="col"><input type="text" name="to" id="to" class="form-control" placeholder=""></div>
                 <div class="col"><a class="btn btn-primary" href="{{ route('users.index') }}"> Search</a></div>
-                <div class="col"><a class="btn btn-success" href="{{ route('users.create') }}"> Create</a></div>
-                <div class="col"><a class="btn btn-primary" href="{{ route('users.index') }}"> Upload</a></div>
-                <div class="col"><a class="btn btn-primary" href="{{ route('users.index') }}"> Download</a></div>
             </div>
 
             @if ($message = Session::get('success'))
@@ -22,9 +25,9 @@
             </div>
             @endif
 
-            <table class="table table-bordered">
+            <table class="table table-bordered" id="user_table">
+                <thead>
                 <tr>
-                    <th>id</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Create User</th>
@@ -36,38 +39,14 @@
                     <th>Updated Date</th>
                     <th width="280px">Operation</th>
                 </tr>
-                @foreach ($users as $user)
-                <tr>
-                    <td>{{ $user->id }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->create_user_id }}</td>
-                    <td>{{ $user->type == 1 ? 'Admin' : 'User' }}</td>
-                    <td>{{ $user->phone }}</td>
-                    <td>{{ $user->dob }}</td>
-                    <td>{{ $user->address }}</td>
-                    <td>{{ $user->created_at->format('Y/m/d') }}</td>
-                    <td>{{ $user->updated_at->format('Y/m/d') }}</td>
-                    <td>
-                        <form action="{{ route('users.destroy',$user->id) }}" method="POST">
-
-                            <a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-info" data-attr="{{ route('users.show',$user->id) }}" title="show">Show</a>
-                            <!-- <a class="btn btn-info" data-toggle="modal" data-target="#exampleModalLong" data-attr="{{ route('users.show',$user->id) }}">Show</a> -->
-                            <a class="btn btn-primary" href="{{ route('users.edit',$user->id) }}">Edit</a>
-                            <a data-toggle="modal" id="deleteButton" data-target="#deleteModal" data-attr="/userDeleteModal/{{$user->id}}" class="btn btn-primary">Delete</a>
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
+                </thead>
+                <tbody>
+                </tbody>
             </table>
         </div>
     </div>
 </div>
 
-{!! $users->links() !!}
 @endsection
 <!--Detail Modal -->
 <div class="modal fade" id="mediumModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
@@ -93,26 +72,66 @@
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
       <div class="modal-body" id="deleteBody">
         ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <a href="{{ route('users.destroy',$user->id) }}" type="submit" class="btn btn-danger">Delete</a>
       </div>
     </div>
   </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <script type="text/javascript">
+ $(document).ready(function() {
+        $('#user_table').DataTable({
+            searching: false,
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('users.index') }}",
+            columns: [{
+                    data: 'name'
+                },
+                {
+                    data: 'email'
+                },
+                {
+                    data: 'create_user_id'
+                },
+                {
+                    data: 'type'
+                },
+                {
+                    data: 'phone'
+                },
+                {
+                    data: 'dob'
+                },
+                {
+                    data: 'address'
+                },
+                {
+                    data: 'created_at'
+                },
+                {
+                    data: 'updated_at'
+                },
+                {
+                    data: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+        });
+    });
+
     $(document).on('click', '#mediumButton', function(event) {
         event.preventDefault();
         let href = $(this).attr('data-attr');
@@ -162,4 +181,10 @@
             },
         })
     });
+
+    $( function() {
+    $( "#to, #from" ).datepicker({  
+       format: 'mm/dd/yyyy'
+     });  
+  } );
 </script>
