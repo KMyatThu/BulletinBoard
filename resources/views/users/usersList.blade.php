@@ -7,7 +7,6 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col"></div>
                 <div class="col">Name</div>
                 <div class="col"><input type="text" id="name" name="name" class="form-control" placeholder=""></div>
                 <div class="col">Email</div>

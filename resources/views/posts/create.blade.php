@@ -1,5 +1,4 @@
 @extends('layout')
-
 @section('content')
 <div class="py-4 container">
     <div class="justify-content-center">

@@ -77,8 +77,6 @@
                         <div class="form-group row">
                             <label for="description" class="col-md-4 col-form-label text-md-right">Profile</label>
                             <div class="col-md-6">
-                                <!-- <input type="file" name="file" class="custom-file-input" id="customFile">
-                                <label class="custom-file-label" for="customFile">Choose file</label> -->
                                 <input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
                             </div>
                         </div>

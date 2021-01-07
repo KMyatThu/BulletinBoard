@@ -33,7 +33,7 @@
                     <div class="form-group row mb-0">
                         <div class="col-md-8 offset-md-4">
                             <button type="submit" class="btn btn-primary">Confirm</button>
-                            <a href="{{ url()->previous()}}" class="btn btn-secondary">Cancel</a>
+                            <a href="{{ url()->previous(), $post->id }}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </div>
                 </form>

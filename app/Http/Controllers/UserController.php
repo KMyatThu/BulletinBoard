@@ -28,15 +28,6 @@ class UserController extends Controller
     
     public function index(Request $request)
     {
-        // $users = User::whereNull('deleted_user_id');
-        // $users = User::all();
-        // $user = User::query();
-        // $users = $user->where('id','1');
-        // return view('users.usersList',compact('users'));
-        // return view('users.usersList')->with([
-        //     'users' => $users,
-        //     ]);
-        // $users = User::latest()->get();
         $name = (!empty($_GET["name"])) ? ($_GET["name"]) : ('');
         $email = (!empty($_GET["email"])) ? ($_GET["email"]) : ('');
         $from = (!empty($_GET["from"])) ? ($_GET["from"]) : ('');
@@ -44,13 +35,13 @@ class UserController extends Controller
         $users = User::whereNull('deleted_user_id');
         if($name != '') $users->where('name', 'LIKE', '%' . $name . '%');
         if($email != '') $users ->where('email', 'LIKE', '%' . $email . '%');
-        if($from != '' && $to != '') $users->whereBetween('created_at', [$from.' 00:00:00',$to.' 23:59:59']);
+        if($from != '') $users ->where('created_at','>=',$from.' 00:00:00');
+        if($to != '') $users->where('created_at','<=',$to.' 23:59:59');
         if ($request->ajax()) {
             return DataTables::of($users)
                 ->addIndexColumn()
-                ->addColumn('name', function ($row) {
+                ->editColumn('name', function ($row) {
                     return '<a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/users/'. $row->id .'">'. $row->name .'</a>';
-                    // return '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="{{ $row->id }}" class="edit btn btn-success edit-product" >'. $row->title .'</a>';
                 })
                 ->addColumn('action', function ($row) {
                     return '<a data-toggle="modal" id="deleteButton" data-target="#deleteModal" data-attr="/userDeleteModal/'. $row->id .'" class="btn btn-danger">Delete</a>';
@@ -58,6 +49,10 @@ class UserController extends Controller
                 ->editColumn('dob', function ($row) 
                 {
                 return $row->dob == null ? '' : date('Y/m/d', strtotime($row->dob));
+                })
+                ->editColumn('type', function ($row) 
+                {
+                return $row->type == 0 ? 'Admin' : 'User';
                 })
                 ->editColumn('created_at', function ($row) 
                 {
@@ -95,7 +90,6 @@ class UserController extends Controller
         if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $user->name . "_" . time() . '.' . $image->getClientOriginalExtension();
-            // $image->move(public_path('/uploads/images/'), $filename);
             Image::make($image)->resize(300, 300)->save(public_path('/uploads/images/' . $filename ));
             $user->profile = $filename;
         }
@@ -107,14 +101,14 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required'
+            'email' => 'required',
         ]);
         $user = new User($request->all());
         $user->password = Hash::make($user->password);
         $user->type = $user->type == 'Admin' ? 0 : 1;
         $user->dob = new DateTime($user->dob);
-        $user->create_user_id = auth()->user()->id;
-        $user->updated_user_id = auth()->user()->id;
+        $user->create_user_id = auth()->user()->type;
+        $user->updated_user_id = auth()->user()->type;
         $user->created_at = new DateTime();
         $user->updated_at = new DateTime();
 
@@ -164,7 +158,7 @@ class UserController extends Controller
 
         $user->type = $user->type == 'Admin' ? 0 : 1;
         $user->dob = Carbon::parse($user->dob);
-        $user->updated_user_id = auth()->user()->id;
+        $user->updated_user_id = auth()->user()->type;
         $user->updated_at = new DateTime();
         User::where('id', $user->id)->update([
             'name' => $user['name'],
@@ -184,7 +178,6 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        dd($user);
         $user->deleted_at = new DateTime();
         User::where('id', $user->id)->update([
             'deleted_user_id' => '1',

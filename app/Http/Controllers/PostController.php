@@ -29,37 +29,17 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        // $posts = Post::whereNull('deleted_user_id');
-        // $posts = Post::latest()->get();
-        // if ($request->ajax()) {
-        //     return DataTables::of($posts)
-        //         ->addIndexColumn()
-        //         ->addColumn('action', function ($row) {
-        //             $btn = '<a href="posts/'.$row->id.'/edit" class="edit btn btn-primary btn-sm">Edit</a>';
-        //             $btn = $btn.'<a href="posts/'.$row->id.'/destroy" class="edit btn btn-danger btn-sm">Delete</a>';
-        //             return $btn;
-        //         })
-        //         ->editColumn('created_at', function ($row) 
-        //         {
-        //         //change over here
-        //         return date('Y/m/d', strtotime($row->created_at) );
-        //         })
-        //         ->rawColumns(['action'])
-        //         ->make(true);
-        // }
-        // return $this->search($request);
         $search = (!empty($_GET["keyword"])) ? ($_GET["keyword"]) : ('');
-        $posts = Post::whereNull('deleted_user_id')
-            ->where('title', 'LIKE', '%' . $search . '%')
-            ->orWhere('description', 'LIKE', '%' . $search . '%');
-        // $postss = Post::where('title','LIKE','%'.$search.'%')->orWhere('description','LIKE','%'.$search.'%')->paginate(5);
-        // return $this->postList($request,$posts);
+        $posts = Post::whereNull('deleted_user_id');
+        if($search != '') $posts->where('title', 'LIKE', '%' . $search . '%')
+            ->orwhere('description', 'LIKE', '%' . $search . '%');
         if ($request->ajax()) {
             return DataTables::of($posts)
                 ->addIndexColumn()
-                ->addColumn('title', function ($row) {
+                ->editColumn('title', function ($row) {
                     return '<a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/posts/'. $row->id .'">'. $row->title .'</a>';
-                    // return '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="{{ $row->id }}" class="edit btn btn-success edit-product" >'. $row->title .'</a>';
+                })->editColumn('create_user_id', function ($row) {
+                    return $row->create_user_id == 1 ? 'User' : 'Admin' ;
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '<a href="posts/'.$row->id.'/edit" class="edit btn btn-primary btn-sm">Edit</a>';
@@ -68,20 +48,13 @@ class PostController extends Controller
                 })
                 ->editColumn('created_at', function ($row) 
                 {
-                //change over here
                 return date('Y/m/d', strtotime($row->created_at) );
                 })
-                ->rawColumns(['title'],['action'])
+                ->rawColumns(['title'],['action'],['create_user_id'])
                 ->make(true);
         }
         return view('posts.index');
     }
-
-    // public function index()
-    // {
-    //     $posts = Post::whereNull('deleted_user_id')->paginate(5);
-    //     return view('posts.index', compact('posts'));
-    // }
 
     /**
      * Show the form for creating a new resource.
@@ -119,8 +92,8 @@ class PostController extends Controller
 
         $post = new Post($request->all());
         $post->status = 1;
-        $post->create_user_id = auth()->user()->id;
-        $post->updated_user_id = auth()->user()->id;
+        $post->create_user_id = auth()->user()->type;
+        $post->updated_user_id = auth()->user()->type;
         $post->created_at = new DateTime();
         $post->updated_at = new DateTime();
 
@@ -211,7 +184,6 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        dd($post);
         $post->deleted_at = new DateTime();
         Post::where('id', $post->id)->update([
             'deleted_user_id' => '1',
@@ -220,16 +192,6 @@ class PostController extends Controller
 
         return redirect()->route('posts.index')
             ->with('success', 'Product deleted successfully');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request)
-    {
-        
     }
 
     /**
@@ -247,7 +209,6 @@ class PostController extends Controller
 
     public function upload(Request $request)
     {
-        dd($request);
         Excel::import(new PostImport, $request->file('file')->store('temp'));
         return redirect()->route('posts.index');
     }
@@ -259,7 +220,6 @@ class PostController extends Controller
                 ->addIndexColumn()
                 ->addColumn('title', function ($row) {
                     return '<a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/posts/'. $row->id .'">'. $row->title .'</a>';
-                    // return '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="{{ $row->id }}" class="edit btn btn-success edit-product" >'. $row->title .'</a>';
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '<a href="posts/'.$row->id.'/edit" class="edit btn btn-primary btn-sm">Edit</a>';
@@ -268,17 +228,11 @@ class PostController extends Controller
                 })
                 ->editColumn('created_at', function ($row) 
                 {
-                //change over here
                 return date('Y/m/d', strtotime($row->created_at) );
                 })
                 ->rawColumns(['title'],['action'])
                 ->make(true);
         }
         return view('posts.index');
-    }
-
-    public function CustomPosts(Request $request)
-    {
-        
     }
 }

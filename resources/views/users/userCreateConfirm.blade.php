@@ -22,9 +22,6 @@
 
                     <form action="/createUser" method="POST">
                         @csrf
-
-                       
-                        <!--  -->
                         <div class="form-group row">
                             <label for="title" class="col-md-4 col-form-label text-md-right">Name</label>
                             <div class="col-md-6">
@@ -86,7 +83,6 @@
                                 <input type="reset" class="btn btn-secondary" value="Cancel" />
                             </div>
                         </div>
-                        <!--  -->
                     </form>
                 </div>
             </div>

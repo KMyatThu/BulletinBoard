@@ -28,10 +28,10 @@
                 <table class="table table-bordered data-table">
                     <thead>
                         <tr>
-                            <th>Post title</th>
-                            <th>Post Description</th>
-                            <th>Posted User</th>
-                            <th>Posted Date</th>
+                            <th width="280px">Post title</th>
+                            <th width="280px">Post Description</th>
+                            <th width="280px">Posted User</th>
+                            <th width="280px">Posted Date</th>
                             <th width="280px">Operation</th>
                         </tr>
                     </thead>
@@ -85,7 +85,8 @@
                 }
             },
             columns: [{
-                    data: 'title'
+                    data: 'title',
+                    name: 'title',
                 },
                 {
                     data: 'description'
