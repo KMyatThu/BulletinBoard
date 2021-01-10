@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserFormRequest;
 use App\Rules\MatchOldPassword;
 use App\User;
 use DateTime;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -73,22 +75,11 @@ class UserController extends Controller
         return view('users.userCreate');
     }
 
-    public function userCreateConfirm(Request $request)
+    public function userCreateConfirm(UserFormRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'password' => ['required'],
-            'confirm_password' => ['same:password'],
-            'type' => 'required',
-            'phone' => 'required',
-            'dob' => 'required',
-            'address' => 'required',
-            'file' => 'required'
-        ]);
         $user = new User($request->all());
-        if ($request->hasFile('file')) {
-            $image = $request->file('file');
+        if ($request->hasFile('profile')) {
+            $image = $request->file('profile');
             $filename = $user->name . "_" . time() . '.' . $image->getClientOriginalExtension();
             Image::make($image)->resize(300, 300)->save(public_path('/uploads/images/' . $filename ));
             $user->profile = $filename;
@@ -97,12 +88,8 @@ class UserController extends Controller
         return view('users.userCreateConfirm', compact('user'));
     }
 
-    public function createUser(Request $request)
+    public function createUser(UserFormRequest $request, User $user)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-        ]);
         $user = new User($request->all());
         $user->password = Hash::make($user->password);
         $user->type = $user->type == 'Admin' ? 0 : 1;
@@ -111,8 +98,7 @@ class UserController extends Controller
         $user->updated_user_id = auth()->user()->type;
         $user->created_at = new DateTime();
         $user->updated_at = new DateTime();
-
-        User::create([
+        DB::table('users')->insert([
             'name' => $user['name'],
             'email' => $user['email'],
             'password' => $user['password'],
@@ -141,13 +127,8 @@ class UserController extends Controller
         return view('users.userEdit', compact('user'));
     }
 
-    public function editProfile(Request $request, User $user)
+    public function editProfile(UserFormRequest $request, User $user)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required'
-        ]);
-
         $user = new User($request->all());
         if ($request->hasFile('file')) {
             $image = $request->file('file');
@@ -160,7 +141,7 @@ class UserController extends Controller
         $user->dob = Carbon::parse($user->dob);
         $user->updated_user_id = auth()->user()->type;
         $user->updated_at = new DateTime();
-        User::where('id', $user->id)->update([
+        DB::table('users')->where('id', $user->id)->update([
             'name' => $user['name'],
             'email' => $user['email'],
             'type' => $user['type'],
@@ -179,7 +160,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->deleted_at = new DateTime();
-        User::where('id', $user->id)->update([
+        DB::table('users')->where('id', $user->id)->update([
             'deleted_user_id' => '1',
             'deleted_at' => $user['deleted_at']
         ]);
@@ -201,7 +182,7 @@ class UserController extends Controller
             'newConfirmPassword' => ['same:newPassword'],
         ]);
 
-        User::find(auth()->user()->id)->update(['password'=> Hash::make($request->newPassword)]);
+        DB::table('users')->where('id', auth()->user()->id)->update(['password'=> Hash::make($request->newPassword)]);
         
         return redirect()->route('users.index')
             ->with('success', 'Password Update successfully');

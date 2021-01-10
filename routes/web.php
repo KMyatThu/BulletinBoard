@@ -26,7 +26,7 @@ Route::get('profile/{user}', UserController::class .'@profile');
 Route::resource('posts', PostController::class);
 Route::get('postList', PostController::class .'@postList');
 Route::get('posts/{post}/destroy', PostController::class .'@destroy');
-Route::post('posts/postCreateConfirm', PostController::class .'@postCreateConfirm');
+Route::post('/posts/postCreateConfirm', PostController::class .'@postCreateConfirm');
 Route::post('/postUpdateConfirm', PostController::class .'@postUpdateConfirm');
 Route::post('/update', PostController::class .'@update');
 Route::post('posts/search', PostController::class .'@search');

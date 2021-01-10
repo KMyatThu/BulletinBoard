@@ -20,7 +20,7 @@
                     </div>
                     @endif
 
-                    <form action="/createUser" method="POST">
+                    <form action="/createUser" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group row">
                             <label for="title" class="col-md-4 col-form-label text-md-right">Name</label>

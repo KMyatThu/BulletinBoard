@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Exports\PostExport;
+use App\Http\Requests\PostFormRequest;
 use App\Imports\PostImport;
 use DateTime;
 use App\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -66,14 +68,9 @@ class PostController extends Controller
         return view('posts.create', compact('post'));
     }
 
-    public function postCreateConfirm(Request $request)
+    public function postCreateConfirm(PostFormRequest $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-        ]);
         $post = new Post($request->all());
-
         return view('posts.createConfirm', compact('post'));
     }
 
@@ -83,13 +80,8 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostFormRequest $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-        ]);
-
         $post = new Post($request->all());
         $post->status = 1;
         $post->create_user_id = auth()->user()->type;
@@ -97,7 +89,7 @@ class PostController extends Controller
         $post->created_at = new DateTime();
         $post->updated_at = new DateTime();
 
-        Post::create([
+        DB::table('posts')->insert([
             'title' => $post['title'],
             'description' => $post['description'],
             'status' => $post['status'],
@@ -133,12 +125,8 @@ class PostController extends Controller
         return view('posts.postEdit', compact('post'));
     }
 
-    public function postUpdateConfirm(Request $request)
+    public function postUpdateConfirm(PostFormRequest $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-        ]);
         $post = new Post($request->all());
         $post->status = $request->has('status') ? 1 : 0;
 
@@ -154,17 +142,12 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-        ]);
-
         $post = new Post($request->all());
         $post->status = $request->has('status') ? 1 : false;
         $post->updated_user_id = auth()->user()->id;
         $post->updated_at = new DateTime();
 
-        Post::where('id', $post->id)->update([
+        DB::table('posts')->where('id', $post->id)->update([
             'title' => $post['title'],
             'description' => $post['description'],
             'status' => $post['status'],
@@ -185,7 +168,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $post->deleted_at = new DateTime();
-        Post::where('id', $post->id)->update([
+        DB::table('posts')->where('id', $post->id)->update([
             'deleted_user_id' => '1',
             'deleted_at' => $post['deleted_at']
         ]);
