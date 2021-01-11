@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -152,7 +153,11 @@ class UserController extends Controller
         if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $user->name . '_' . time() . '.' . $image->getClientOriginalExtension();
-            Image::make($image)->resize(300, 300)->save( public_path('/uploads/images/' . $filename ));
+            $image_path = public_path('/uploads/images/');
+            if(File::exists($image_path . auth()->user()->profile)) {
+                File::delete($image_path . auth()->user()->profile);
+            }
+            Image::make($image)->resize(300, 300)->save($image_path . $filename);
             $user->profile = $filename;
         }
 

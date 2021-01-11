@@ -36,6 +36,27 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($posts as $post)
+                        <tr>
+                            <td>{{ $post->title }}</td>
+                            <td>{{ $post->description }}</td>
+                            <td>{{ $post->create_user_id }}</td>
+                            <td>{{ $post->created_at}}</td>
+                            <td>
+                                <form action="{{ route('posts.destroy',$post->id) }}" method="POST">
+
+                                    <a class="btn btn-info" href="{{ route('posts.show',$post->id) }}">Show</a>
+
+                                    <a class="btn btn-primary" href="{{ route('posts.edit',$post->id) }}">Edit</a>
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -72,42 +93,42 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('.data-table').DataTable({
-            searching: false,
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('posts.index') }}",
-                type: 'GET',
-                data: function(d) {
-                    d.keyword = $('#keyword').val();
-                }
-            },
-            columns: [{
-                    data: 'title',
-                    name: 'title',
-                },
-                {
-                    data: 'description'
-                },
-                {
-                    data: 'create_user_id'
-                },
-                {
-                    data: 'created_at'
-                },
-                {
-                    data: 'action',
-                    orderable: false,
-                    searchable: false
-                },
-            ]
-        });
-        $('#myBtn').click(function() {
-            $('.data-table').DataTable().draw(true);
-        });
-    });
+    // $(document).ready(function() {
+    //     $('.data-table').DataTable({
+    //         searching: false,
+    //         processing: true,
+    //         serverSide: true,
+    //         ajax: {
+    //             url: "{{ route('posts.index') }}",
+    //             type: 'GET',
+    //             data: function(d) {
+    //                 d.keyword = $('#keyword').val();
+    //             }
+    //         },
+    //         columns: [{
+    //                 data: 'title',
+    //                 name: 'title',
+    //             },
+    //             {
+    //                 data: 'description'
+    //             },
+    //             {
+    //                 data: 'create_user_id'
+    //             },
+    //             {
+    //                 data: 'created_at'
+    //             },
+    //             {
+    //                 data: 'action',
+    //                 orderable: false,
+    //                 searchable: false
+    //             },
+    //         ]
+    //     });
+    //     $('#myBtn').click(function() {
+    //         $('.data-table').DataTable().draw(true);
+    //     });
+    // });
     // when click detail
     $('body').on('click', '#mediumButton', function(event) {
         event.preventDefault();
