@@ -80,7 +80,7 @@ class PostController extends Controller
     }
 
     public function postCreateConfirm(PostFormRequest $request)
-    {   
+    {
         $post = new Post($request->all());
         return view('posts.createConfirm', compact('post'));
     }
@@ -94,21 +94,7 @@ class PostController extends Controller
     public function store(PostFormRequest $request)
     {
         $post = new Post($request->all());
-        $post->status = 1;
-        $post->create_user_id = auth()->user()->type;
-        $post->updated_user_id = auth()->user()->type;
-        $post->created_at = new DateTime();
-        $post->updated_at = new DateTime();
-
-        DB::table('posts')->insert([
-            'title' => $post['title'],
-            'description' => $post['description'],
-            'status' => $post['status'],
-            'create_user_id' => $post['create_user_id'],
-            'updated_user_id' => $post['updated_user_id'],
-            'created_at' => $post['created_at'],
-            'updated_at' => $post['updated_at']
-        ]);
+        $this->postServiceInterface->registerPost($post);
 
         return redirect()->route('posts.index')
             ->with('success', 'Product created successfully.');
@@ -154,17 +140,8 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         $post = new Post($request->all());
-        $post->status = $request->has('status') ? 1 : false;
-        $post->updated_user_id = auth()->user()->id;
-        $post->updated_at = new DateTime();
-
-        DB::table('posts')->where('id', $post->id)->update([
-            'title' => $post['title'],
-            'description' => $post['description'],
-            'status' => $post['status'],
-            'updated_user_id' => $post['updated_user_id'],
-            'updated_at' => $post['updated_at']
-        ]);
+        $post->status = $request->has('status') ? 1 : 0;
+        $this->postServiceInterface->editPost($post);
 
         return redirect()->route('posts.index')
             ->with('success', 'Product update successfully.');
@@ -178,16 +155,23 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $post->deleted_at = new DateTime();
-        DB::table('posts')->where('id', $post->id)->update([
-            'deleted_user_id' => '1',
-            'deleted_at' => $post['deleted_at']
-        ]);
-
+        $this->postServiceInterface->deletePost($post);
         return redirect()->route('posts.index')
             ->with('success', 'Product deleted successfully');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Post  $post
+     * @return \Illuminate\Http\Response
+     */
+    public function searchPost(Request $request)
+    {
+        $keyword = $request->input('keyword');
+        $posts = $this->postServiceInterface->searchPost($keyword);
+        return view('posts.index')->with(["posts" => $posts]);
+    }
     /**
      * @return \Illuminate\Support\Collection
      */
@@ -207,24 +191,23 @@ class PostController extends Controller
         return redirect()->route('posts.index');
     }
 
-    public function postList($request,$posts)
+    public function postList($request, $posts)
     {
         if ($request->ajax()) {
             return DataTables::of($posts)
                 ->addIndexColumn()
                 ->addColumn('title', function ($row) {
-                    return '<a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/posts/'. $row->id .'">'. $row->title .'</a>';
+                    return '<a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/posts/' . $row->id . '">' . $row->title . '</a>';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '<a href="posts/'.$row->id.'/edit" class="edit btn btn-primary btn-sm">Edit</a>';
-                    $btn = $btn.'<a href="posts/'.$row->id.'/destroy" class="edit btn btn-danger btn-sm">Delete</a>';
+                    $btn = '<a href="posts/' . $row->id . '/edit" class="edit btn btn-primary btn-sm">Edit</a>';
+                    $btn = $btn . '<a href="posts/' . $row->id . '/destroy" class="edit btn btn-danger btn-sm">Delete</a>';
                     return $btn;
                 })
-                ->editColumn('created_at', function ($row) 
-                {
-                return date('Y/m/d', strtotime($row->created_at) );
+                ->editColumn('created_at', function ($row) {
+                    return date('Y/m/d', strtotime($row->created_at));
                 })
-                ->rawColumns(['title'],['action'])
+                ->rawColumns(['title'], ['action'])
                 ->make(true);
         }
         return view('posts.index');

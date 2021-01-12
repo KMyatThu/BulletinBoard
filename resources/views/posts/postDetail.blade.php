@@ -31,7 +31,7 @@
 <div class="form-group row">
     <label for="staticEmail" class="col-sm-2 col-form-label">Updated Date</label>
     <div class="col-sm-10">
-        <label for="staticEmail" class="col-sm-10 col-form-label">{{ $post->updated_at->format('Y/m/d') }}</label>
+        <label for="staticEmail" class="col-sm-10 col-form-label">{{ $post->updated_at != null ? $post->updated_at->format('Y/m/d') : '' }}</label>
     </div>
 </div>
 <div class="form-group row">

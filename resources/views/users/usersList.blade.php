@@ -87,6 +87,7 @@
 
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script type="text/javascript">
  $(document).ready(function() {
@@ -142,6 +143,17 @@
             $('#user_table').DataTable().draw(true);
         });
     });
+
+    // For adding the token to axios header (add this only one time).
+    // var token = document.head.querySelector('meta[name="csrf-token"]');
+    // window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+
+    // send contact form data.
+    // axios.get("/api/user").then((response)=>{
+    //     console.log(response)
+    // }).catch((error)=>{
+    //     console.log(error.response.data)
+    // });
 
     $(document).on('click', '#mediumButton', function(event) {
         event.preventDefault();
