@@ -4,9 +4,18 @@ namespace App\Dao;
 
 use App\Contracts\Dao\UserDaoInterface;
 use App\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserDao implements UserDaoInterface
 {
+    /**
+     * Get All Users List
+     * @return Users
+     */
+    public function getAllUsers()
+    {
+        return User::whereNull('deleted_user_id')->get();
+    }
     /**
      * Register User
      * @param user
@@ -54,5 +63,15 @@ class UserDao implements UserDaoInterface
             'deleted_user_id' => $user['deleted_user_id'],
             'deleted_at' => $user['deleted_at'],
         ]);
+    }
+    
+    /**
+     * Update Passwords
+     * @param passwords
+     */
+    public function updatePassword($passwords)
+    {
+        User::where('id', auth()->user()->id)->update(['password' => Hash::make($passwords['newPassword'])]);
+
     }
 }

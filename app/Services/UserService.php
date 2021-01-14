@@ -22,6 +22,15 @@ class UserService implements UserServiceInterface
     {
         $this->userDaoInterface = $userDaoInterface;
     }
+
+    /**
+     * Get all User list
+     * @return users
+     */
+    public function getUserList()
+    {
+        return $this->userDaoInterface->getAllUsers();
+    }
     /**
      * Create new user
      * @param user
@@ -58,5 +67,14 @@ class UserService implements UserServiceInterface
         $user->deleted_at = new DateTime();
         $user->deleted_user_id = auth()->user()->type;
         $this->userDaoInterface->softDeleteUser($user);
+    }
+
+    /**
+     * Update password
+     * @param passwords
+     */
+    public function updatePassword($passwords)
+    {
+        $this->userDaoInterface->updatePassword($passwords);
     }
 }

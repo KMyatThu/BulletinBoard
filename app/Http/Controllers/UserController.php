@@ -3,19 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\Services\UserServiceInterface;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\UserFormRequest;
-use App\Rules\MatchOldPassword;
 use App\User;
-use DateTime;
 use Intervention\Image\Facades\Image;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
@@ -31,49 +23,11 @@ class UserController extends Controller
         $this->userServiceInterface = $userServiceInterface;
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $name = (!empty($_GET["name"])) ? ($_GET["name"]) : ('');
-        $email = (!empty($_GET["email"])) ? ($_GET["email"]) : ('');
-        $from = (!empty($_GET["from"])) ? ($_GET["from"]) : ('');
-        $to = (!empty($_GET["to"])) ? ($_GET["to"]) : ('');
-        $users = User::whereNull('deleted_user_id');
-        if ($name != '') $users->where('name', 'LIKE', '%' . $name . '%');
-        if ($email != '') $users->where('email', 'LIKE', '%' . $email . '%');
-        if ($from != '') $users->where('created_at', '>=', $from . ' 00:00:00');
-        if ($to != '') $users->where('created_at', '<=', $to . ' 23:59:59');
-        if ($request->ajax()) {
-            return DataTables::of($users)
-                ->addIndexColumn()
-                ->editColumn('name', function ($row) {
-                    return '<a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/users/' . $row->id . '">' . $row->name . '</a>';
-                })
-                ->addColumn('action', function ($row) {
-                    return '<a data-toggle="modal" id="deleteButton" data-target="#deleteModal" data-attr="/userDeleteModal/' . $row->id . '" class="btn btn-danger">Delete</a>';
-                })
-                ->editColumn('dob', function ($row) {
-                    return $row->dob == null ? '' : date('Y/m/d', strtotime($row->dob));
-                })
-                ->editColumn('type', function ($row) {
-                    return $row->type == 0 ? 'Admin' : 'User';
-                })
-                ->editColumn('created_at', function ($row) {
-                    return date('Y/m/d', strtotime($row->created_at));
-                })
-                ->editColumn('updated_at', function ($row) {
-                    return date('Y/m/d', strtotime($row->updated_at));
-                })
-                ->rawColumns(['name'], ['action'])
-                ->make(true);
-        }
-        return view('users.usersList');
+        $users = $this->userServiceInterface->getUserList();
+        return view('users.usersList')->with(["users" => $users]);
     }
-
-    // public function index()
-    // {
-    //     return response()->json(['users' => User::whereNull('deleted_user_id')->get()]);
-    //     // return view('users.usersList')->with(["users" => response()->json([$users])]);
-    // }
 
     public function create()
     {
@@ -147,16 +101,10 @@ class UserController extends Controller
      * @param request
      * @return void
      */
-    public function updatePassword(Request $request)
+    public function updatePassword(ChangePasswordRequest $request)
     {
-        $request->validate([
-            'currentPassword' => ['required', new MatchOldPassword],
-            'newPassword' => ['required'],
-            'newConfirmPassword' => ['same:newPassword'],
-        ]);
-
-        DB::table('users')->where('id', auth()->user()->id)->update(['password' => Hash::make($request->newPassword)]);
-
+        $passwords = $request->all();
+        $this->userServiceInterface->updatePassword($passwords);
         return redirect()->route('users.index')
             ->with('success', 'Password Update successfully');
     }

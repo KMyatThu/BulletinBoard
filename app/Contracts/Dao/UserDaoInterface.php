@@ -5,6 +5,12 @@ namespace App\Contracts\Dao;
 interface UserDaoInterface
 {
     /**
+     * Get All users list
+     * @return users
+     */
+    public function getAllUsers();
+    
+    /**
      * Register User
      * @param user
      */
@@ -21,4 +27,10 @@ interface UserDaoInterface
      * @param user
      */
     public function softDeleteUser($user);
+
+    /**
+     * Update Password
+     * @param passwords
+     */
+    public function updatePassword($passwords);
 }

@@ -5,6 +5,12 @@ namespace App\Contracts\Services;
 interface UserServiceInterface
 {
     /**
+     * Get User List
+     * 
+     */
+    public function getUserList();
+    
+    /**
      * Register User
      * @param user
      */
@@ -21,4 +27,10 @@ interface UserServiceInterface
      * @param user
      */
     public function deleteUser($user);
+
+    /**
+     * Update Password
+     * @param user
+     */
+    public function updatePassword($passwords);
 }

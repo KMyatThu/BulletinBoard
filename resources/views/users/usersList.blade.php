@@ -40,6 +40,20 @@
                 </tr>
                 </thead>
                 <tbody>
+                @foreach ($users as $user)
+                        <tr>
+                            <td><a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/users/{{$user->id}}"> {{ $user->name }}</a></td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->create_user_id == 0 ? 'Admin' : 'User' }}</td>
+                            <td>{{ $user->type == 0 ? 'Admin' : 'User' }}</td>
+                            <td>{{ $user->phone }}</td>
+                            <td>{{ $user->dob }}</td>
+                            <td>{{ $user->address }}</td>
+                            <td>{{ $user->created_at->format('Y/m/d') }}</td>
+                            <td>{{ $user->updated_at->format('Y/m/d') }}</td>
+                            <td><a data-toggle="modal" id="deleteButton" data-target="#deleteModal" class="btn btn-danger" data-attr="/userDeleteModal/{{$user->id}}">Delete</a></td>
+                        </tr>
+                        @endforeach
                 </tbody>
             </table>
         </div>
@@ -90,71 +104,6 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script type="text/javascript">
- $(document).ready(function() {
-        $('#user_table').DataTable({
-            searching: false,
-            processing: true,
-            serverSide: true,
-            ajax:{
-                url: "{{ route('users.index') }}",
-                type: 'GET',
-                data: function(d) {
-                    d.name = $('#name').val();
-                    d.email = $('#email').val();
-                    d.from = $('#from').val().replace(/(\d\d)\/(\d\d)\/(\d{4})/, "$3-$1-$2");
-                    d.to = $('#to').val().replace(/(\d\d)\/(\d\d)\/(\d{4})/, "$3-$1-$2");
-                }
-            },
-            columns: [{
-                    data: 'name'
-                },
-                {
-                    data: 'email'
-                },
-                {
-                    data: 'create_user_id'
-                },
-                {
-                    data: 'type'
-                },
-                {
-                    data: 'phone'
-                },
-                {
-                    data: 'dob'
-                },
-                {
-                    data: 'address'
-                },
-                {
-                    data: 'created_at'
-                },
-                {
-                    data: 'updated_at'
-                },
-                {
-                    data: 'action',
-                    orderable: false,
-                    searchable: false
-                },
-            ]
-        });
-        $('#searchBtn').click(function() {
-            $('#user_table').DataTable().draw(true);
-        });
-    });
-
-    // For adding the token to axios header (add this only one time).
-    // var token = document.head.querySelector('meta[name="csrf-token"]');
-    // window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-
-    // send contact form data.
-    // axios.get("/api/user").then((response)=>{
-    //     console.log(response)
-    // }).catch((error)=>{
-    //     console.log(error.response.data)
-    // });
-
     $(document).on('click', '#mediumButton', function(event) {
         event.preventDefault();
         let href = $(this).attr('data-attr');
@@ -206,7 +155,7 @@
     });
 
     $( function() {
-    $( "#to, #from" ).datepicker({  
+    $( "#to, #from" ).datepicker({
        format: 'mm/dd/yyyy'
      });  
   } );
