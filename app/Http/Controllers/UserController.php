@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Contracts\Services\UserServiceInterface;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\UserEditFormRequest;
 use App\Http\Requests\UserFormRequest;
 use App\User;
 use Intervention\Image\Facades\Image;
@@ -101,11 +102,11 @@ class UserController extends Controller
      *
      * @param request,user
      */
-    public function editProfile(UserFormRequest $request, User $user)
+    public function editProfile(UserEditFormRequest $request, User $user)
     {
         $user = new User($request->all());
-        if ($request->hasFile('file')) {
-            $image = $request->file('file');
+        if ($request->hasFile('profile')) {
+            $image = $request->file('profile');
             $filename = $user->name . '_' . time() . '.' . $image->getClientOriginalExtension();
             Image::make($image)->resize(300, 300)->save(public_path('/uploads/images/' . $filename));
             $user->profile = $filename;

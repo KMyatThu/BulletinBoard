@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <input type="hidden" value="{{ $user->id }}" name="id">
-                <input type="hidden" value="{{ $user->profile }}" name="oldProfile">
+                <input type="hidden" value="{{ $user->profile }}" name="profile">
                 <div class="col-xs-12 col-sm-12 col-md-12 text-center">
                     <button type="submit" class="btn btn-primary">Edit</button>
                     <button type="reset" class="btn btn-secondary">Clear</button>
