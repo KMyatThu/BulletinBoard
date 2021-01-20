@@ -77,4 +77,14 @@ class UserService implements UserServiceInterface
     {
         $this->userDaoInterface->updatePassword($passwords);
     }
+
+    /**
+     * Search User list
+     * 
+     * @param name,email,start_date,end_date
+     */
+    public function searchUserList($name,$email,$start_date,$end_date)
+    {
+        return $this->userDaoInterface->searchUserList($name,$email,$start_date,$end_date);
+    }
 }

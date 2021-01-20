@@ -33,4 +33,10 @@ interface UserDaoInterface
      * @param passwords
      */
     public function updatePassword($passwords);
+
+    /**
+     * Search users
+     * @param name,email,start_date,end_date
+     */
+    public function searchUserList($name,$email,$start_date,$end_date);
 }

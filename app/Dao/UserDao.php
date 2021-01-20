@@ -6,7 +6,8 @@ use App\Contracts\Dao\UserDaoInterface;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 
-class UserDao implements UserDaoInterface
+class UserDao implements
+    UserDaoInterface
 {
     /**
      * Get All Users List
@@ -64,7 +65,7 @@ class UserDao implements UserDaoInterface
             'deleted_at' => $user['deleted_at'],
         ]);
     }
-    
+
     /**
      * Update Passwords
      * @param passwords
@@ -72,6 +73,19 @@ class UserDao implements UserDaoInterface
     public function updatePassword($passwords)
     {
         User::where('id', auth()->user()->id)->update(['password' => Hash::make($passwords['newPassword'])]);
+    }
 
+    /**
+     * Search users
+     * @param name,email,start_date,end_date
+     */
+    public function searchUserList($name, $email, $start_date, $end_date)
+    {
+        return User::whereNull('deleted_user_id')->where(function ($users) use ($name, $email, $start_date, $end_date) {
+            $users->where('name', 'LIKE', '%' . $name . '%')
+                ->where('email', 'LIKE', '%' . $email . '%');
+            if ($start_date != null) $users->where('created_at', '>=', $start_date . ' 00:00:00');
+            if ($end_date != null) $users->where('created_at', '<=', $end_date . ' 23:59:59');
+        })->get();
     }
 }

@@ -170,4 +170,20 @@ class UserController extends Controller
     {
         return view('users.profile', compact('user'));
     }
+
+    /**
+     * Search users
+     * 
+     * @param request
+     */
+    public function searchUser(Request $request)
+    {
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
+
+        $users = $this->userServiceInterface->searchUserList($name,$email,$start_date,$end_date);
+        return view('users.usersList')->with(["users" => $users]);
+    }
 }

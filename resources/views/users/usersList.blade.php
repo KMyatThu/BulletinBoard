@@ -6,56 +6,82 @@
             User Lists
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col">Name</div>
-                <div class="col"><input type="text" id="name" name="name" class="form-control" placeholder=""></div>
-                <div class="col">Email</div>
-                <div class="col"><input type="text" id="email" name="email" class="form-control" placeholder=""></div>
-                <div class="col">From</div>
-                <div class="col"><input type="text" name="from" id="from" class="form-control" placeholder=""></div>
-                <div class="col">To</div>
-                <div class="col"><input type="text" name="to" id="to" class="form-control" placeholder=""></div>
-                <div class="col"><a class="btn btn-primary" id="searchBtn"> Search</a></div>
-            </div>
-
-            @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
-            </div>
-            @endif
-
-            <table class="table table-bordered" id="user_table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Create User</th>
-                    <th>Type</th>
-                    <th>Phone</th>
-                    <th>Date of Birth</th>
-                    <th>Address</th>
-                    <th>Created Date</th>
-                    <th>Updated Date</th>
-                    <th width="280px">Operation</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($users as $user)
+            <div class="container-fluid">
+                <div class="row" style="flex-flow: row-reverse;">
+                    <table>
                         <tr>
-                            <td><a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/users/{{$user->id}}"> {{ $user->name }}</a></td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->create_user_id == 0 ? 'Admin' : 'User' }}</td>
-                            <td>{{ $user->type == 0 ? 'Admin' : 'User' }}</td>
-                            <td>{{ $user->phone }}</td>
-                            <td>{{ $user->dob }}</td>
-                            <td>{{ $user->address }}</td>
-                            <td>{{ $user->created_at->format('Y/m/d') }}</td>
-                            <td>{{ $user->updated_at->format('Y/m/d') }}</td>
-                            <td><a data-toggle="modal" id="deleteButton" data-target="#deleteModal" class="btn btn-danger" data-attr="/userDeleteModal/{{$user->id}}">Delete</a></td>
+                            <form action="/searchUser" method="POST">
+                                @csrf
+                                <th>Name</th>
+                                <th>
+                                    <input type="text" id="name" name="name" class="form-control" placeholder="">
+                                </th>
+                                <th>
+                                    <div class="col">Email</div>
+                                </th>
+                                <th>
+                                    <div class="col"><input type="text" id="email" name="email" class="form-control" placeholder=""></div>
+                                </th>
+                                <th>
+                                    <div class="col">From</div>
+                                </th>
+                                <th>
+                                    <div class="col"><input type="text" name="start_date" id="start_date" class="form-control" autocomplete="off"></div>
+                                </th>
+                                <th>
+                                    <div class="col">To</div>
+                                </th>
+                                <th>
+                                    <div class="col"><input type="text" name="end_date" id="end_date" class="form-control" autocomplete="off"></div>
+                                </th>
+                                <th>
+                                    <div class="col"><button type="submit" class="btn btn-primary" style="width:135px;"> Search</a></div>
+                                </th>
+                            </form>
                         </tr>
-                        @endforeach
-                </tbody>
-            </table>
+                    </table>
+                </div>
+
+                @if ($message = Session::get('success'))
+                <div class="alert alert-success">
+                    <p>{{ $message }}</p>
+                </div>
+                @endif
+                <div class="row">
+                    <table class="table table-responsive table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center" style="min-width: 115px;">Create User</th>
+                                <th class="text-center" style="min-width: 115px;">Type</th>
+                                <th class="text-center" style="min-width: 180px;">Phone</th>
+                                <th class="text-center" style="min-width: 140px;">Date of Birth</th>
+                                <th class="text-center" style="min-width: 250px;">Address</th>
+                                <th class="text-center" style="min-width: 130px;">Created Date</th>
+                                <th class="text-center" style="min-width: 130px;">Updated Date</th>
+                                <th class="text-center">Operation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users as $user)
+                            <tr>
+                                <td><a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/users/{{$user->id}}"> {{ $user->name }}</a></td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->create_user_id == 0 ? 'Admin' : 'User' }}</td>
+                                <td>{{ $user->type == 0 ? 'Admin' : 'User' }}</td>
+                                <td>{{ $user->phone }}</td>
+                                <td>{{ $user->dob }}</td>
+                                <td>{{ $user->address }}</td>
+                                <td>{{ $user->created_at->format('Y/m/d') }}</td>
+                                <td>{{ $user->updated_at->format('Y/m/d') }}</td>
+                                <td><a data-toggle="modal" id="deleteButton" data-target="#deleteModal" class="btn btn-danger" data-attr="/userDeleteModal/{{$user->id}}">Delete</a></td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -63,33 +89,33 @@
 @endsection
 <!--Detail Modal -->
 <div class="modal fade" id="mediumModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="mediumBody">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="mediumBody">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Delete Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-body" id="deleteBody">
-        ...
-      </div>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="deleteBody">
+                ...
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -100,8 +126,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script type="text/javascript">
     $(document).on('click', '#mediumButton', function(event) {
@@ -154,9 +180,10 @@
         })
     });
 
-    $( function() {
-    $( "#to, #from" ).datepicker({
-       format: 'mm/dd/yyyy'
-     });  
-  } );
+    //date picker
+    $(function() {
+        $("#start_date, #end_date").datepicker({
+            dateFormat: 'yy/mm/dd'
+        });
+    });
 </script>

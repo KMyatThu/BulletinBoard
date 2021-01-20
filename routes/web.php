@@ -22,6 +22,7 @@ Route::get('/destroy/{user}', UserController::class .'@destroy');
 Route::get('users/{user}/passwordChange', UserController::class .'@passwordChange');
 Route::post('users/{user}/updatePassword', UserController::class .'@updatePassword');
 Route::get('profile/{user}', UserController::class .'@profile');
+Route::post('searchUser', UserController::class .'@searchUser');
 
 Route::resource('posts', PostController::class);
 Route::get('postList', PostController::class .'@postList');

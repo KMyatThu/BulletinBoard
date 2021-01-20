@@ -32,4 +32,12 @@ interface UserServiceInterface
      * @param user
      */
     public function updatePassword($passwords);
+
+    /**
+     * User Search
+     * 
+     * @param name,email,start_date,end_date
+     * 
+     */
+    public function searchUserList($name,$email,$start_date,$end_date);
 }

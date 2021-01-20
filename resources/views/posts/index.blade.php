@@ -1,69 +1,69 @@
 @extends('layout')
 @section('content')
-<div class="py-4 container">
+<div class="py-4">
     <div class="card">
-        <div class="card-header">
-            Post List
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col">
-                    <form action="searchPost" method="POST">
-                        @csrf
-                    <div class="row">
-                        <div class="col">keyword</div>
-                        <div class="col"><input type="text" name="keyword" class="form-control" placeholder=""></div>
-                        <div class="col"><button type="submit" class="btn btn-primary">Search</button></div>
+            <div class="card-header">
+                Post List
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <form action="searchPost" method="POST">
+                            @csrf
+                            <div class="row">
+                                <div class="col" style="text-align: right;">keyword</div>
+                                <div class="col"><input type="text" name="keyword" class="form-control" placeholder=""></div>
+                                <div class="col"><button type="submit" class="btn btn-primary">Search</button></div>
+                            </div>
+                        </form>
                     </div>
-                    </form>
+                    <div class="col-md-4"><a class="btn btn-success" href="{{ route('posts.create') }}"> Create</a>
+                        <a class="btn btn-primary" href="postUploadIndex"> Upload</a>
+                        <a class="btn btn-primary" href="download"> Download</a>
+                    </div>
+                    @if ($message = Session::get('success'))
+                    <div class="alert alert-success">
+                        <p>{{ $message }}</p>
+                    </div>
+                    @endif
                 </div>
-                <div class="col-md-4"><a class="btn btn-success" href="{{ route('posts.create') }}"> Create</a>
-                    <a class="btn btn-primary" href="postUploadIndex"> Upload</a>
-                    <a class="btn btn-primary" href="download"> Download</a>
+                <div class="row">
+                    <table class="table table-responsive table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 200px;">Post title</th>
+                                <th style="min-width: 200px;">Post Description</th>
+                                <th style="min-width: 120px;">Posted User</th>
+                                <th style="min-width: 130px;">Posted Date</th>
+                                <th style="min-width: 250px;">Operation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($posts as $post)
+                            <tr>
+                                <td ><a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="text-info" style="cursor: pointer;" data-attr="/posts/{{$post->id}}"> {{ $post->title }}</a></td>
+                                <td scope="col">{{ $post->description }}</td>
+                                <td scope="col">{{ $post->create_user_id }}</td>
+                                <td scope="col">{{ $post->created_at->format('Y/m/d') }}</td>
+                                <td scope="col">
+                                    <form action="{{ route('posts.destroy',$post->id) }}" method="POST">
+                                        <a class="btn btn-primary" href="{{ route('posts.edit',$post->id) }}">Edit</a>
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-                @if ($message = Session::get('success'))
-                <div class="alert alert-success">
-                    <p>{{ $message }}</p>
+                <div class="d-flex justify-content-left">
+                    {!! $posts->links() !!}
                 </div>
-                @endif
             </div>
-            <div class="row">
-                <table class="table table-bordered data-table">
-                    <thead>
-                        <tr>
-                            <th width="200px">Post title</th>
-                            <th width="280px">Post Description</th>
-                            <th width="200px">Posted User</th>
-                            <th width="280px">Posted Date</th>
-                            <th width="280px">Operation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($posts as $post)
-                        <tr>
-                            <td><a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="btn btn-link" data-attr="/posts/{{$post->id}}"> {{ $post->title }}</a></td>
-                            <td>{{ $post->description }}</td>
-                            <td>{{ $post->create_user_id }}</td>
-                            <td>{{ $post->created_at->format('Y/m/d') }}</td>
-                            <td>
-                                <form action="{{ route('posts.destroy',$post->id) }}" method="POST">
-                                    <a class="btn btn-primary" href="{{ route('posts.edit',$post->id) }}">Edit</a>
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-<div class="d-flex justify-content-left">
-    {!! $posts->links() !!}
-</div>
         </div>
     </div>
-</div>
 @endsection
 
 <div class="modal fade" id="mediumModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
@@ -94,42 +94,6 @@
 
 
 <script type="text/javascript">
-    // $(document).ready(function() {
-    //     $('.data-table').DataTable({
-    //         searching: false,
-    //         processing: true,
-    //         serverSide: true,
-    //         ajax: {
-    //             url: "{{ route('posts.index') }}",
-    //             type: 'GET',
-    //             data: function(d) {
-    //                 d.keyword = $('#keyword').val();
-    //             }
-    //         },
-    //         columns: [{
-    //                 data: 'title',
-    //                 name: 'title',
-    //             },
-    //             {
-    //                 data: 'description'
-    //             },
-    //             {
-    //                 data: 'create_user_id'
-    //             },
-    //             {
-    //                 data: 'created_at'
-    //             },
-    //             {
-    //                 data: 'action',
-    //                 orderable: false,
-    //                 searchable: false
-    //             },
-    //         ]
-    //     });
-    //     $('#myBtn').click(function() {
-    //         $('.data-table').DataTable().draw(true);
-    //     });
-    // });
     // when click detail
     $('body').on('click', '#mediumButton', function(event) {
         event.preventDefault();
