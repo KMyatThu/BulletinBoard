@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserFormRequest extends FormRequest
@@ -25,17 +24,17 @@ class UserFormRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required',
-            'email' => 'required',
-            'type' => 'required',
-            'phone' => 'required',
-            'dob' => 'required',
-            'address' => 'required',
-            'profile' => 'required',
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.request()->id, 'regex:/^.+@.+$/i'],
+            'type' => ['required', 'int', 'regex:/^[0-1]$/i'],
+            'phone' => ['required', 'numeric', 'regex:/(0)[0-9]{10}$/'],
+            'dob' => ['required', 'string', 'date_format:m/d/Y'],
+            'address' => ['required', 'string'],
+            'profile' => ['required', 'image', 'mimes:jpg,bmp,png,jpeg'],
         ];
         if (request()->route()->uri() != "editProfile") {
             $rules += [
-                'password' => ['required'],
+                'password' => ['required', 'string', 'min:4'],
                 'confirm_password' => ['same:password'],
             ];
         }
@@ -51,6 +50,7 @@ class UserFormRequest extends FormRequest
     {
         return [
             'profile.required' => 'A profile upload is required',
+            'phone.regex' => 'Phone no starting with 0 and following 10 digits'
         ];
     }
 }

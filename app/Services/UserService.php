@@ -51,6 +51,7 @@ class UserService implements UserServiceInterface
      */
     public function editProfile($user)
     {
+        if($user->profile == null) $user->profile = $user->oldProfile;
         $user->type = $user->type == 'Admin' ? 0 : 1;
         $user->dob = Carbon::parse($user->dob);
         $user->updated_user_id = auth()->user()->type;

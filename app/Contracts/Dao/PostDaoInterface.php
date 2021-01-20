@@ -4,7 +4,16 @@ namespace App\Contracts\Dao;
 
 interface PostDaoInterface
 {
+    /**
+     * Get Post Lists
+     */
     public function getPostList();
+
+    /**
+     * Register Post
+     * @param post
+     */
+    
     public function registerPost($post);
     /**
      * Post Update

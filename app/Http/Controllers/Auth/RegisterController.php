@@ -6,10 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
@@ -51,16 +49,19 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        $message = array(
+            'phone.regex' => 'Phone no starting with 0 and following 10 digits'
+        );
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users', 'regex:/^.+@.+$/i'],
             'password' => ['required', 'string', 'min:4', 'confirmed'],
-            'type' => 'required',
-            'phone' => ['required'],
-            'dob' => 'required',
-            'address' => 'required',
-            'file' => 'required',
-        ]);
+            'type' => ['required', 'numeric', 'regex:/^[0-1]$/i'],
+            'phone' => ['required', 'numeric', 'regex:/(0)[0-9]{10}$/'],
+            'dob' => ['required', 'string', 'date_format:m/d/Y'],
+            'address' => ['required', 'string'],
+            'file' => ['required', 'image', 'mimes:jpg,bmp,png,jpeg']
+        ], $message);
     }
 
     /**
@@ -71,7 +72,7 @@ class RegisterController extends Controller
      */
     protected function create(User $data)
     {
-        $result = DB::table('users')->insertGetId([
+        $result = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
@@ -82,7 +83,7 @@ class RegisterController extends Controller
             'profile' => $data['profile'],
             'create_user_id' => $data['create_user_id'],
             'updated_user_id' => $data['updated_user_id']
-        ]);
+        ])->id;
         $data->id = $result;
         return $data;
     }

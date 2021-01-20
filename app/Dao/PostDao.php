@@ -7,9 +7,12 @@ use App\Contracts\Dao\PostDaoInterface;
 
 class PostDao implements PostDaoInterface
 {
+    /**
+     * Get Post List
+     */
     public function getPostList()
     {
-        return Post::whereNull('deleted_user_id')->get();
+        return Post::whereNull('deleted_user_id')->paginate(5);
     }
 
     /**

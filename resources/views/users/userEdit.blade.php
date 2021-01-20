@@ -48,7 +48,7 @@
                 <div class="form-group row">
                     <label for="dob" class="col-sm-2 col-form-label">Date of Birth</label>
                     <div class="col-sm-10">
-                        <input type="text" name="dob" id="dob" class="form-control" placeholder="mm/dd/yyyy" value="{{ $user->dob }}" autocomplete="off">
+                        <input type="text" name="dob" id="dob" class="form-control" placeholder="mm/dd/yyyy" value="{{ date('m/d/Y', strtotime($user->dob)) }}" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -66,11 +66,11 @@
                 <div class="form-group row">
                     <label for="profile" class="col-sm-2 col-form-label">New Profile</label>
                     <div class="col-sm-10">
-                        <input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
+                        <input type="file" name="profile" class="form-control-file" id="exampleFormControlFile1">
                     </div>
                 </div>
                 <input type="hidden" value="{{ $user->id }}" name="id">
-                <input type="hidden" value="{{ $user->profile }}" name="profile">
+                <input type="hidden" value="{{ $user->profile }}" name="oldProfile">
                 <div class="col-xs-12 col-sm-12 col-md-12 text-center">
                     <button type="submit" class="btn btn-primary">Edit</button>
                     <button type="reset" class="btn btn-secondary">Clear</button>

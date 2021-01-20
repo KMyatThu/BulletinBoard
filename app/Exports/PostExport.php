@@ -9,8 +9,9 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
-class PostExport implements FromCollection, WithHeadings, WithColumnFormatting, WithMapping
+class PostExport implements FromCollection, WithHeadings, WithColumnFormatting, WithMapping, WithStrictNullComparison
 {
     /**
     * @return \Illuminate\Support\Collection

@@ -58,6 +58,9 @@
                     </tbody>
                 </table>
             </div>
+<div class="d-flex justify-content-left">
+    {!! $posts->links() !!}
+</div>
         </div>
     </div>
 </div>

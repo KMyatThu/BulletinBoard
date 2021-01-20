@@ -23,9 +23,15 @@ class PostFormRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'title' => 'required',
-            'description' => 'required',
-        ];
+        if (request()->route()->uri() == "upload") {
+            return [
+                'file' => 'required|file|mimes:csv'
+            ];
+        } else {
+            return [
+                'title' => 'required|string',
+                'description' => 'required|string',
+            ];
+        }
     }
 }

@@ -22,6 +22,9 @@ class PostService implements PostServiceInterface
         $this->postDaoInterface = $postDaoInterface;
     }
 
+    /**
+     * Get Post Lists
+     */
     public function getPostList()
     {
         return $this->postDaoInterface->getPostList();

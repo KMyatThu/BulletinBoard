@@ -6,7 +6,6 @@ interface UserServiceInterface
 {
     /**
      * Get User List
-     * 
      */
     public function getUserList();
     

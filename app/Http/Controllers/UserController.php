@@ -23,17 +23,32 @@ class UserController extends Controller
         $this->userServiceInterface = $userServiceInterface;
     }
 
+    /**
+     * User Lists
+     *
+     * @return users
+     */
     public function index()
     {
         $users = $this->userServiceInterface->getUserList();
         return view('users.usersList')->with(["users" => $users]);
     }
 
+    /**
+     * Create a new user form
+     *
+     * @return void
+     */
     public function create()
     {
         return view('users.userCreate');
     }
 
+    /**
+     * Create and confirm to the user
+     *
+     * @return user
+     */
     public function userCreateConfirm(UserFormRequest $request)
     {
         $user = new User($request->all());
@@ -47,7 +62,12 @@ class UserController extends Controller
         return view('users.userCreateConfirm', compact('user'));
     }
 
-    public function createUser(UserFormRequest $request, User $user)
+    /**
+     * Create a user to the database.
+     *
+     * @return void
+     */
+    public function createUser(Request $request, User $user)
     {
         $user = new User($request->all());
         $this->userServiceInterface->registerUser($user);
@@ -55,16 +75,32 @@ class UserController extends Controller
             ->with('success', 'User created successfully.');
     }
 
+    /**
+     * User detail
+     *
+     * @param user
+     * @return user
+     */
     public function show(User $user)
     {
         return view('users.userDetail', compact('user'));
     }
 
+    /**
+     * Edit user
+     *
+     * @param user
+     */
     public function edit(User $user)
     {
         return view('users.userEdit', compact('user'));
     }
 
+    /**
+     * Edit user profile
+     *
+     * @param request,user
+     */
     public function editProfile(UserFormRequest $request, User $user)
     {
         $user = new User($request->all());
@@ -80,9 +116,9 @@ class UserController extends Controller
     }
 
     /**
-     * Create a new controller instance.
+     * Delete user
      *
-     * @return void
+     * @param user
      */
     public function destroy(User $user)
     {
@@ -91,6 +127,11 @@ class UserController extends Controller
             ->with('success', 'User deleted successfully');
     }
 
+    /**
+     * Change password
+     *
+     * @return void
+     */
     public function passwordChange(Request $request, User $user)
     {
         return view('users.passwordChange');
@@ -109,11 +150,21 @@ class UserController extends Controller
             ->with('success', 'Password Update successfully');
     }
 
+    /**
+     * User detail to display in Delete modal
+     *
+     * @param user
+     */
     public function userDeleteModal(User $user)
     {
         return view('users.userDeleteModal', compact('user'));
     }
 
+    /**
+     * Display User Profile
+     *
+     * @param user
+     */
     public function profile(User $user)
     {
         return view('users.profile', compact('user'));
