@@ -32,7 +32,7 @@
                     <thead>
                         <tr>
                             <th style="min-width: 200px;">Post title</th>
-                            <th style="min-width: 200px;">Post Description</th>
+                            <th style="min-width: 394px;">Post Description</th>
                             <th style="min-width: 120px;">Posted User</th>
                             <th style="min-width: 130px;">Posted Date</th>
                             <th style="min-width: 250px;">Operation</th>

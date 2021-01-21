@@ -138,7 +138,7 @@ class PostController extends Controller
     {
         $keyword = $request->input('keyword');
         $posts = $this->postServiceInterface->searchPost($keyword);
-        return view('posts.index')->with(["posts" => $posts]);
+        return view('posts.index', compact('posts'));
     }
     /**
      * @return \Illuminate\Support\Collection

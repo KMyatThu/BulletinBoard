@@ -30,7 +30,7 @@ Route::get('posts/{post}/destroy', PostController::class .'@destroy');
 Route::post('/posts/postCreateConfirm', PostController::class .'@postCreateConfirm');
 Route::post('/postUpdateConfirm', PostController::class .'@postUpdateConfirm');
 Route::post('/update', PostController::class .'@update');
-Route::post('searchPost', PostController::class .'@searchPost');
+Route::any('searchPost', PostController::class .'@searchPost');
 Route::get('postUploadIndex', PostController::class .'@postUploadIndex');
 Route::post('upload', PostController::class .'@upload');
 Route::get('download', PostController::class .'@download');

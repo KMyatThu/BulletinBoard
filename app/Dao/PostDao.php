@@ -68,6 +68,6 @@ class PostDao implements PostDaoInterface
         return Post::whereNull('deleted_user_id')->where(function($posts) use ($keyword) {
             $posts->where('title', 'LIKE', '%' . $keyword . '%')
             ->orwhere('description', 'LIKE', '%' . $keyword . '%');
-        })->get();
+        })->paginate(5);
     }
 }
