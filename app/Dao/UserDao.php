@@ -84,8 +84,8 @@ class UserDao implements
         return User::whereNull('deleted_user_id')->where(function ($users) use ($name, $email, $start_date, $end_date) {
             $users->where('name', 'LIKE', '%' . $name . '%')
                 ->where('email', 'LIKE', '%' . $email . '%');
-            if ($start_date != null) $users->where('created_at', '>=', $start_date . ' 00:00:00');
-            if ($end_date != null) $users->where('created_at', '<=', $end_date . ' 23:59:59');
+            if ($start_date != null or $start_date != "") $users->whereBetween('created_at', '>=', $start_date);
+            if ($end_date != null or $end_date != "") $users->where('created_at', '<=', $end_date);
         })->get();
     }
 }

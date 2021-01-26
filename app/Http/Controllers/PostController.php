@@ -34,7 +34,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = $this->postServiceInterface->getPostList();
-        return view('posts.index', compact('posts'));
+        return view('posts.postlist', compact('posts'));
     }
 
     /**
@@ -64,7 +64,7 @@ class PostController extends Controller
         $post = new Post($request->all());
         $this->postServiceInterface->registerPost($post);
 
-        return redirect()->route('posts.index')
+        return redirect()->route('posts.postlist')
             ->with('success', 'Product created successfully.');
     }
 
@@ -111,7 +111,7 @@ class PostController extends Controller
         $post->status = $request->has('status') ? 1 : 0;
         $this->postServiceInterface->editPost($post);
 
-        return redirect()->route('posts.index')
+        return redirect()->route('posts.postlist')
             ->with('success', 'Product update successfully.');
     }
 
@@ -124,7 +124,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $this->postServiceInterface->deletePost($post);
-        return redirect()->route('posts.index')
+        return redirect()->route('posts.postlist')
             ->with('success', 'Product deleted successfully');
     }
 
@@ -138,7 +138,7 @@ class PostController extends Controller
     {
         $keyword = $request->input('keyword');
         $posts = $this->postServiceInterface->searchPost($keyword);
-        return view('posts.index', compact('posts'));
+        return view('posts.postlist', compact('posts'));
     }
     /**
      * @return \Illuminate\Support\Collection
@@ -148,7 +148,7 @@ class PostController extends Controller
         return Excel::download(new PostExport, 'posts.csv');
     }
 
-    public function postUploadIndex()
+    public function uploadIndex()
     {
         return view('posts.postUpload');
     }
@@ -156,6 +156,6 @@ class PostController extends Controller
     public function upload(PostFormRequest $request)
     {
         Excel::import(new PostImport, $request->file('file')->store('temp'));
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.postlist');
     }
 }

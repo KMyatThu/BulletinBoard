@@ -3,7 +3,6 @@
 namespace App\Imports;
 
 use App\Post;
-use DateTime;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -25,7 +24,7 @@ class PostImport implements ToCollection, ToModel
     */
     public function model(array $row)
     {
-        $dateTime = new DateTime();
+        $dateTime = now();
 
         $request['your_datetime_field'] = $dateTime->format('Y-m-d H:i:s');
         return new Post([

@@ -14,27 +14,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::resource('users', UserController::class);
-Route::post('/userCreateConfirm', UserController::class .'@userCreateConfirm');
-Route::post('/createUser', UserController::class .'@createUser');
-Route::post('/editProfile', UserController::class .'@editProfile');
-Route::get('/userDeleteModal/{user}', UserController::class .'@userDeleteModal');
-Route::get('/destroy/{user}', UserController::class .'@destroy');
-Route::get('users/{user}/passwordChange', UserController::class .'@passwordChange');
-Route::post('users/{user}/updatePassword', UserController::class .'@updatePassword');
-Route::get('profile/{user}', UserController::class .'@profile');
-Route::post('searchUser', UserController::class .'@searchUser');
+Route::prefix('users')->group(function () {
+    Route::post('/userCreateConfirm', UserController::class .'@userCreateConfirm');
+    Route::post('/createUser', UserController::class .'@createUser');
+    Route::get('/{user}/profile', UserController::class .'@profile');
+    Route::post('/{user}/editProfile', UserController::class .'@editProfile');
+    Route::get('/{user}/userDeleteModal', UserController::class .'@userDeleteModal');
+    Route::get('/{user}/destroy', UserController::class .'@destroy');
+    Route::post('searchUser', UserController::class .'@searchUser');
+    Route::get('/{user}/passwordChange', UserController::class .'@passwordChange');
+    Route::post('/{user}/updatePassword', UserController::class .'@updatePassword');
+});
 
 Route::resource('posts', PostController::class);
-Route::get('postList', PostController::class .'@postList');
-Route::get('posts/{post}/destroy', PostController::class .'@destroy');
-Route::post('/posts/postCreateConfirm', PostController::class .'@postCreateConfirm');
-Route::post('/postUpdateConfirm', PostController::class .'@postUpdateConfirm');
-Route::post('/update', PostController::class .'@update');
-Route::any('searchPost', PostController::class .'@searchPost');
-Route::get('postUploadIndex', PostController::class .'@postUploadIndex');
-Route::post('upload', PostController::class .'@upload');
-Route::get('download', PostController::class .'@download');
-Route::get('/postReturn/{{post}}', PostController::class .'@postReturn');
+Route::prefix('posts')->group(function () {
+    Route::get('/{post}/destroy', PostController::class .'@destroy');
+    Route::post('/postCreateConfirm', PostController::class .'@postCreateConfirm');
+    Route::post('/{post}/postUpdateConfirm', PostController::class .'@postUpdateConfirm');
+    Route::post('/{post}/update', PostController::class .'@update');
+    Route::any('/post/searchPost', PostController::class .'@searchPost');
+    Route::get('/post/download', PostController::class .'@download');
+    Route::get('/post/uploadIndex', PostController::class .'@uploadIndex');
+    Route::post('/post/upload', PostController::class .'@upload');
+});
 
 Route::get('/', function () {
     return view('auth.login');
@@ -42,4 +44,3 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');

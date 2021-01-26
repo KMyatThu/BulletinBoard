@@ -20,7 +20,7 @@
                     </div>
                     @endif
 
-                    <form action="/userCreateConfirm" method="POST" enctype="multipart/form-data">
+                    <form action="userCreateConfirm" method="POST" enctype="multipart/form-data">
                         @csrf
                         <!--  -->
                         <div class="form-group row">

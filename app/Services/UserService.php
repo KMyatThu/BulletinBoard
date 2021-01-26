@@ -11,16 +11,16 @@ use Illuminate\Support\Facades\Hash;
 class UserService implements UserServiceInterface
 {
     // file dao for injecting PostDaoInterface
-    private $userDaoInterface;
+    private $userDao;
 
     /**
      * Class Constructor
      * @param PostDaoInterface
      * @return
      */
-    public function __construct(UserDaoInterface $userDaoInterface)
+    public function __construct(UserDaoInterface $userDao)
     {
-        $this->userDaoInterface = $userDaoInterface;
+        $this->userDao = $userDao;
     }
 
     /**
@@ -29,7 +29,7 @@ class UserService implements UserServiceInterface
      */
     public function getUserList()
     {
-        return $this->userDaoInterface->getAllUsers();
+        return $this->userDao->getAllUsers();
     }
     /**
      * Create new user
@@ -42,7 +42,7 @@ class UserService implements UserServiceInterface
         $user->dob = new DateTime($user->dob);
         $user->create_user_id = auth()->user()->type;
         $user->updated_user_id = auth()->user()->type;
-        $this->userDaoInterface->registerUser($user);
+        $this->userDao->registerUser($user);
     }
 
     /**
@@ -54,8 +54,8 @@ class UserService implements UserServiceInterface
         $user->type = $user->type == 'Admin' ? 0 : 1;
         $user->dob = Carbon::parse($user->dob);
         $user->updated_user_id = auth()->user()->type;
-        $user->updated_at = new DateTime();
-        $this->userDaoInterface->updateUser($user);
+        $user->updated_at = now();
+        $this->userDao->updateUser($user);
     }
 
     /**
@@ -64,9 +64,9 @@ class UserService implements UserServiceInterface
      */
     public function deleteUser($user)
     {
-        $user->deleted_at = new DateTime();
+        $user->deleted_at = now();
         $user->deleted_user_id = auth()->user()->type;
-        $this->userDaoInterface->softDeleteUser($user);
+        $this->userDao->softDeleteUser($user);
     }
 
     /**
@@ -75,7 +75,7 @@ class UserService implements UserServiceInterface
      */
     public function updatePassword($passwords)
     {
-        $this->userDaoInterface->updatePassword($passwords);
+        $this->userDao->updatePassword($passwords);
     }
 
     /**
@@ -83,8 +83,8 @@ class UserService implements UserServiceInterface
      * 
      * @param name,email,start_date,end_date
      */
-    public function searchUserList($name,$email,$start_date,$end_date)
+    public function searchUserList($name, $email, $start_date, $end_date)
     {
-        return $this->userDaoInterface->searchUserList($name,$email,$start_date,$end_date);
+        return $this->userDao->searchUserList($name, $email, $start_date, $end_date);
     }
 }

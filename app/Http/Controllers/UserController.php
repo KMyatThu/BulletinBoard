@@ -183,7 +183,7 @@ class UserController extends Controller
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
 
-        $users = $this->userServiceInterface->searchUserList($name,$email,$start_date,$end_date);
+        $users = $this->userServiceInterface->searchUserList($name, $email, $start_date, $end_date);
         return view('users.usersList')->with(["users" => $users]);
     }
 }

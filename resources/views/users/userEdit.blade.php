@@ -16,7 +16,7 @@
         </div>
         @endif
         <div class="card-body">
-            <form action="/editProfile" method="POST" enctype="multipart/form-data">
+            <form action="editProfile" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-2 col-form-label">Name</label>

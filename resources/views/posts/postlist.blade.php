@@ -8,7 +8,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col">
-                    <form action="searchPost" method="POST">
+                    <form action="/posts/post/searchPost" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col" style="text-align: right;">keyword</div>
@@ -18,8 +18,8 @@
                     </form>
                 </div>
                 <div class="col-md-4"><a class="btn btn-success" href="{{ route('posts.create') }}"> Create</a>
-                    <a class="btn btn-primary" href="postUploadIndex"> Upload</a>
-                    <a class="btn btn-primary" href="download"> Download</a>
+                    <a class="btn btn-primary" href="/posts/uploadIndex"> Upload</a>
+                    <a class="btn btn-primary" href="/posts/post/download"> Download</a>
                 </div>
                 @if ($message = Session::get('success'))
                 <div class="alert alert-success">

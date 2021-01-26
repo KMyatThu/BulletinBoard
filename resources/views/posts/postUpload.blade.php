@@ -8,7 +8,7 @@
             Posts upload as CSV & Excel to Database
         </h2>
 
-        <form action="/upload" method="POST" enctype="multipart/form-data">
+        <form action="/posts/post/upload" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group mb-4" style="max-width: 500px; margin: 0 auto;">
                 <div class="custom-file text-left">

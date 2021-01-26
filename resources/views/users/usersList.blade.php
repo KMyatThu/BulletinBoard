@@ -10,7 +10,7 @@
                 <div class="row" style="flex-flow: row-reverse;">
                     <table>
                         <tr>
-                            <form action="/searchUser" method="POST">
+                            <form action="/users/searchUser" method="POST">
                                 @csrf
                                 <th>Name</th>
                                 <th>
@@ -75,7 +75,7 @@
                                 <td>{{ $user->address }}</td>
                                 <td>{{ $user->created_at->format('Y/m/d') }}</td>
                                 <td>{{ $user->updated_at->format('Y/m/d') }}</td>
-                                <td><a data-toggle="modal" id="deleteButton" data-target="#deleteModal" class="btn btn-danger" data-attr="/userDeleteModal/{{$user->id}}">Delete</a></td>
+                                <td><a data-toggle="modal" id="deleteButton" data-target="#deleteModal" class="btn btn-danger" data-attr="users/{{$user->id}}/userDeleteModal/">Delete</a></td>
                             </tr>
                             @endforeach
                         </tbody>

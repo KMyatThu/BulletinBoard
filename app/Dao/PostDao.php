@@ -23,13 +23,7 @@ class PostDao implements PostDaoInterface
 
     public function registerPost($post)
     {
-        Post::create([
-                'title' => $post['title'],
-                'description' => $post['description'],
-                'status' => $post['status'],
-                'create_user_id' => $post['create_user_id'],
-                'updated_user_id' => $post['updated_user_id'],
-            ]);
+        Post::create($post);
     }
 
     /**
@@ -38,13 +32,7 @@ class PostDao implements PostDaoInterface
      */
     public function updatePost($post)
     {
-        Post::where('id', $post->id)->update([
-            'title' => $post['title'],
-            'description' => $post['description'],
-            'status' => $post['status'],
-            'updated_user_id' => $post['updated_user_id'],
-            'updated_at' => $post['updated_at']
-        ]);
+        Post::where('id', $post['id'])->update($post);
     }
 
     /**
@@ -53,10 +41,7 @@ class PostDao implements PostDaoInterface
      */
     public function deletePost($post)
     {
-        POST::where('id', $post->id)->update([
-            'deleted_user_id' => $post['deleted_user_id'],
-            'deleted_at' => $post['deleted_at']
-        ]);
+        POST::where('id', $post['id'])->update($post);
     }
 
     /**

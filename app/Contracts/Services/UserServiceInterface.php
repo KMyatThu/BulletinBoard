@@ -39,5 +39,5 @@ interface UserServiceInterface
      * @param name,email,start_date,end_date
      * 
      */
-    public function searchUserList($name,$email,$start_date,$end_date);
+    public function searchUserList($name, $email,$start_date, $end_date);
 }
