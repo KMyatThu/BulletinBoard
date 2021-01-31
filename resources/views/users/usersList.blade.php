@@ -7,35 +7,35 @@
         </div>
         <div class="card-body">
             <div class="container-fluid">
-                <div class="row" style="flex-flow: row-reverse;">
+                <div class="searchBox" style="flex-flow: row-reverse;">
                     <table>
                         <tr>
                             <form action="/users/searchUser" method="POST">
                                 @csrf
-                                <th>Name</th>
+                                <th><div class="">Name</div></th>
                                 <th>
-                                    <input type="text" id="name" name="name" class="form-control" placeholder="">
+                                <div class="searchItem"><input type="text" id="name" name="name" class="form-control" placeholder=""></div>
                                 </th>
                                 <th>
-                                    <div class="col">Email</div>
+                                    <div class="">Email</div>
                                 </th>
                                 <th>
-                                    <div class="col"><input type="text" id="email" name="email" class="form-control" placeholder=""></div>
+                                <div class="searchItem"><input type="text" id="email" name="email" class="form-control" placeholder=""></div>
                                 </th>
                                 <th>
-                                    <div class="col">From</div>
+                                    <div class="">From</div>
                                 </th>
                                 <th>
-                                    <div class="col"><input type="text" name="start_date" id="start_date" class="form-control" autocomplete="off"></div>
+                                <div class="searchItem"><input type="text" name="start_date" id="start_date" class="form-control" autocomplete="off"></div>
                                 </th>
                                 <th>
-                                    <div class="col">To</div>
+                                    <div class="">To</div>
                                 </th>
                                 <th>
-                                    <div class="col"><input type="text" name="end_date" id="end_date" class="form-control" autocomplete="off"></div>
+                                <div class="searchItem"><input type="text" name="end_date" id="end_date" class="form-control" autocomplete="off"></div>
                                 </th>
                                 <th>
-                                    <div class="col"><button type="submit" class="btn btn-primary" style="width:135px;"> Search</a></div>
+                                    <div class=""><button type="submit" class="btn btn-primary" style="width:135px;"> Search</a></div>
                                 </th>
                             </form>
                         </tr>
@@ -44,6 +44,12 @@
 
                 @if ($message = Session::get('success'))
                 <div class="alert alert-success">
+                    <p>{{ $message }}</p>
+                </div>
+                @endif
+
+                @if ($message = Session::get('error'))
+                <div class="alert alert-danger">
                     <p>{{ $message }}</p>
                 </div>
                 @endif
@@ -187,3 +193,17 @@
         });
     });
 </script>
+
+<style>
+    .table {
+        max-height: 400px;
+        overflow: auto;
+        display: inline-block;
+    }
+    .searchBox{
+        padding-bottom: 1.2rem;
+    }
+    .searchItem{
+        padding: 15px;
+    }
+</style>

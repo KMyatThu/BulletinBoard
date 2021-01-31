@@ -71,9 +71,14 @@ class UserController extends Controller
     public function createUser(Request $request, User $user)
     {
         $user = new User($request->all());
-        $this->userServiceInterface->registerUser($user);
-        return redirect()->route('users.index')
-            ->with('success', 'User created successfully.');
+        $userCreated = $this->userServiceInterface->registerUser($user);
+        if ($userCreated) {
+            return redirect()->route('users.index')
+                ->with('success', 'User created successfully.');
+        } else {
+            return redirect()->route('users.index')
+                ->with('error', 'User not created.');
+        }
     }
 
     /**
@@ -111,9 +116,14 @@ class UserController extends Controller
             Image::make($image)->resize(300, 300)->save(public_path('/uploads/images/' . $filename));
             $user->profile = $filename;
         }
-        $this->userServiceInterface->editProfile($user);
-        return redirect()->route('users.index')
-            ->with('success', 'User profile update successfully.');
+        $userEdited = $this->userServiceInterface->editProfile($user);
+        if ($userEdited == 1) {
+            return redirect()->route('users.index')
+                ->with('success', 'User profile update successfully.');
+        } else {
+            return redirect()->route('users.index')
+                ->with('error', 'User profile not updated.');
+        }
     }
 
     /**
@@ -123,9 +133,14 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $this->userServiceInterface->deleteUser($user);
-        return redirect()->route('users.index')
-            ->with('success', 'User deleted successfully');
+        $userDeleted = $this->userServiceInterface->deleteUser($user);
+        if ($userDeleted == 1) {
+            return redirect()->route('users.index')
+                ->with('success', 'User deleted successfully');
+        } else {
+            return redirect()->route('users.index')
+                ->with('error', 'User not deleted');
+        }
     }
 
     /**
@@ -133,9 +148,9 @@ class UserController extends Controller
      *
      * @return void
      */
-    public function passwordChange(Request $request, User $user)
+    public function passwordChange()
     {
-        return view('users.passwordChange');
+        return view('users.userChangePassword');
     }
 
     /**
@@ -146,9 +161,14 @@ class UserController extends Controller
     public function updatePassword(ChangePasswordRequest $request)
     {
         $passwords = $request->all();
-        $this->userServiceInterface->updatePassword($passwords);
-        return redirect()->route('users.index')
-            ->with('success', 'Password Update successfully');
+        $userUpdatedPassword = $this->userServiceInterface->updatePassword($passwords);
+        if($userUpdatedPassword == 1){
+            return redirect()->route('users.index')
+                ->with('success', 'Password Update successfully');
+        } else {
+            return redirect()->route('users.index')
+                ->with('error', 'Password not updated');
+        }
     }
 
     /**
@@ -168,7 +188,7 @@ class UserController extends Controller
      */
     public function profile(User $user)
     {
-        return view('users.profile', compact('user'));
+        return view('users.userProfile', compact('user'));
     }
 
     /**
@@ -182,7 +202,9 @@ class UserController extends Controller
         $email = $request->input('email');
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
-
+        if($end_date != null && $end_date != "" && $start_date > $end_date){
+            return redirect()->route('users.index')->with('error', 'Start date is greater than End date');
+        }
         $users = $this->userServiceInterface->searchUserList($name, $email, $start_date, $end_date);
         return view('users.usersList')->with(["users" => $users]);
     }

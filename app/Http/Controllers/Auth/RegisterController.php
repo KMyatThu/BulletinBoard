@@ -50,14 +50,14 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         $message = array(
-            'phone.regex' => 'Phone no starting with 0 and following 10 digits'
+            'phone.digits' => 'Phone no atleast 3 digits'
         );
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users', 'regex:/^.+@.+$/i'],
             'password' => ['required', 'string', 'min:4', 'confirmed'],
             'type' => ['required', 'numeric', 'regex:/^[0-1]$/i'],
-            'phone' => ['required', 'numeric', 'regex:/(0)[0-9]{10}$/'],
+            'phone' => ['required', 'numeric', 'digits_between:3,11'],
             'dob' => ['required', 'string', 'date_format:m/d/Y'],
             'address' => ['required', 'string'],
             'file' => ['required', 'image', 'mimes:jpg,bmp,png,jpeg']
@@ -80,9 +80,7 @@ class RegisterController extends Controller
             'phone' => $data['phone'],
             'dob' => $data['dob'],
             'address' => $data['address'],
-            'profile' => $data['profile'],
-            'create_user_id' => $data['create_user_id'],
-            'updated_user_id' => $data['updated_user_id']
+            'profile' => $data['profile']
         ])->id;
         $data->id = $result;
         return $data;

@@ -12,7 +12,7 @@ class PostDao implements PostDaoInterface
      */
     public function getPostList()
     {
-        return Post::whereNull('deleted_user_id')->paginate(5);
+        return Post::active()->paginate(5);
     }
 
     /**
@@ -23,7 +23,7 @@ class PostDao implements PostDaoInterface
 
     public function registerPost($post)
     {
-        Post::create($post);
+        return Post::create($post);
     }
 
     /**
@@ -32,7 +32,7 @@ class PostDao implements PostDaoInterface
      */
     public function updatePost($post)
     {
-        Post::where('id', $post['id'])->update($post);
+        return Post::where('id', $post['id'])->update($post);
     }
 
     /**
@@ -41,7 +41,7 @@ class PostDao implements PostDaoInterface
      */
     public function deletePost($post)
     {
-        POST::where('id', $post['id'])->update($post);
+        return POST::where('id', $post['id'])->update($post);
     }
 
     /**
@@ -50,7 +50,7 @@ class PostDao implements PostDaoInterface
      */
     public function searchPost($keyword)
     {
-        return Post::whereNull('deleted_user_id')->where(function($posts) use ($keyword) {
+        return Post::active()->where(function($posts) use ($keyword) {
             $posts->where('title', 'LIKE', '%' . $keyword . '%')
             ->orwhere('description', 'LIKE', '%' . $keyword . '%');
         })->paginate(5);

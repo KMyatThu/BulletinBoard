@@ -42,7 +42,7 @@ class UserService implements UserServiceInterface
         $user->dob = new DateTime($user->dob);
         $user->create_user_id = auth()->user()->type;
         $user->updated_user_id = auth()->user()->type;
-        $this->userDao->registerUser($user);
+        return $this->userDao->registerUser($user);
     }
 
     /**
@@ -55,7 +55,7 @@ class UserService implements UserServiceInterface
         $user->dob = Carbon::parse($user->dob);
         $user->updated_user_id = auth()->user()->type;
         $user->updated_at = now();
-        $this->userDao->updateUser($user);
+        return $this->userDao->updateUser($user);
     }
 
     /**
@@ -66,7 +66,7 @@ class UserService implements UserServiceInterface
     {
         $user->deleted_at = now();
         $user->deleted_user_id = auth()->user()->type;
-        $this->userDao->softDeleteUser($user);
+        return $this->userDao->softDeleteUser($user);
     }
 
     /**
@@ -75,7 +75,7 @@ class UserService implements UserServiceInterface
      */
     public function updatePassword($passwords)
     {
-        $this->userDao->updatePassword($passwords);
+        return $this->userDao->updatePassword($passwords);
     }
 
     /**

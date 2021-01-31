@@ -22,4 +22,12 @@ class Post extends Model
         'deleted_at'
     ];
     
+    /**
+     * Scope a query to only undeleted posts.
+     *
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('deleted_user_id', null);
+    }
 }

@@ -23,8 +23,8 @@ class CreateUsersTable extends Migration
             $table->string('phone', 20)->nullable();
             $table->string('address', 255)->nullable();
             $table->date('dob')->nullable();
-            $table->integer('create_user_id');
-            $table->integer('updated_user_id');
+            $table->integer('create_user_id')->nullable();
+            $table->integer('updated_user_id')->nullable();
             $table->integer('deleted_user_id')->nullable();
             $table->dateTime('deleted_at')->nullable();
             $table->timestamps();

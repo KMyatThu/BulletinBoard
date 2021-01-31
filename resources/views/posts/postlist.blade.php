@@ -7,27 +7,33 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col">
+                <div class="col-md-8">
                     <form action="/posts/post/searchPost" method="POST">
                         @csrf
                         <div class="row">
-                            <div class="col" style="text-align: right;">keyword</div>
-                            <div class="col"><input type="text" name="keyword" class="form-control" placeholder=""></div>
-                            <div class="col"><button type="submit" class="btn btn-primary">Search</button></div>
+                            <div class="searchItem">keyword</div>
+                            <div class="searchItem"><input type="text" name="keyword" class="form-control" placeholder=""></div>
+                            <div class="searchItem"><button type="submit" class="btn btn-primary">Search</button></div>
                         </div>
                     </form>
                 </div>
-                <div class="col-md-4"><a class="btn btn-success" href="{{ route('posts.create') }}"> Create</a>
-                    <a class="btn btn-primary" href="/posts/uploadIndex"> Upload</a>
+                <div class="postOption col-md-4">
+                    <a class="btn btn-success" href="{{ route('posts.create') }}"> Create</a>
+                    <a class="btn btn-primary" href="/posts/post/uploadIndex"> Upload</a>
                     <a class="btn btn-primary" href="/posts/post/download"> Download</a>
                 </div>
-                @if ($message = Session::get('success'))
-                <div class="alert alert-success">
-                    <p>{{ $message }}</p>
-                </div>
-                @endif
             </div>
-            <div class="row">
+            @if ($message = Session::get('success'))
+            <div class="alert alert-success">
+                <p>{{ $message }}</p>
+            </div>
+            @endif
+            @if ($message = Session::get('error'))
+            <div class="alert alert-danger">
+                <p>{{ $message }}</p>
+            </div>
+            @endif
+            <div class="">
                 <table class="table table-responsive table-bordered">
                     <thead>
                         <tr>
@@ -43,7 +49,7 @@
                         <tr>
                             <td><a data-toggle="modal" id="mediumButton" data-target="#mediumModal" class="text-info" style="cursor: pointer;" data-attr="/posts/{{$post->id}}"> {{ $post->title }}</a></td>
                             <td scope="col">{{ $post->description }}</td>
-                            <td scope="col">{{ $post->create_user_id }}</td>
+                            <td scope="col">{{ $post->create_user_id == 0 ? "Admin" : "User" }}</td>
                             <td scope="col">{{ $post->created_at->format('Y/m/d') }}</td>
                             <td scope="col">
                                 <form action="{{ route('posts.destroy',$post->id) }}" method="POST">
@@ -121,3 +127,13 @@
         })
     });
 </script>
+
+<style>
+.postOption{
+    text-align: right;
+    padding: 15px;
+}
+.searchItem{
+    padding: 15px;
+}
+</style>

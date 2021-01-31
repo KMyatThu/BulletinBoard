@@ -39,7 +39,7 @@ class PostService implements PostServiceInterface
         $post['status'] = 1;
         $post['create_user_id'] = auth()->user()->type;
         $post['updated_user_id'] = auth()->user()->type;
-        $this->postDao->registerPost($post);
+        return $this->postDao->registerPost($post);
     }
 
     /**
@@ -56,7 +56,7 @@ class PostService implements PostServiceInterface
             'updated_user_id' => auth()->user()->type,
             'updated_at' => now()
         ];
-        $this->postDao->updatePost($post);
+        return $this->postDao->updatePost($post);
     }
 
     /**
@@ -70,7 +70,7 @@ class PostService implements PostServiceInterface
             'deleted_at' => now(),
             'deleted_user_id' => auth()->user()->id
         ];
-        $this->postDao->deletePost($post);
+        return $this->postDao->deletePost($post);
     }
 
     /**

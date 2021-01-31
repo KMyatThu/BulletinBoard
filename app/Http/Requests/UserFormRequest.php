@@ -27,7 +27,7 @@ class UserFormRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users', 'regex:/^.+@.+$/i'],
             'type' => ['required', 'int', 'regex:/^[0-1]$/i'],
-            'phone' => ['required', 'numeric', 'regex:/(0)[0-9]{10}$/'],
+            'phone' => ['required','numeric','digits_between:3,11'],
             'dob' => ['required', 'string', 'date_format:m/d/Y'],
             'address' => ['required', 'string'],
             'profile' => ['required', 'image', 'mimes:jpg,bmp,png,jpeg'],
@@ -45,7 +45,7 @@ class UserFormRequest extends FormRequest
     {
         return [
             'profile.required' => 'A profile upload is required',
-            'phone.regex' => 'Phone no starting with 0 and following 10 digits'
+            'phone.digits' => 'Phone no at least 3 digits'
         ];
     }
 }

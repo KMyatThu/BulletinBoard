@@ -15,7 +15,7 @@ class UserDao implements
      */
     public function getAllUsers()
     {
-        return User::whereNull('deleted_user_id')->get();
+        return User::active()->get();
     }
     /**
      * Register User
@@ -23,7 +23,7 @@ class UserDao implements
      */
     public function registerUser($user)
     {
-        User::create([
+        return User::create([
             'name' => $user['name'],
             'email' => $user['email'],
             'password' => $user['password'],
@@ -43,7 +43,7 @@ class UserDao implements
      */
     public function updateUser($user)
     {
-        User::where('id', $user->id)->update([
+        return User::where('id', $user->id)->update([
             'name' => $user['name'],
             'email' => $user['email'],
             'type' => $user['type'],
@@ -60,7 +60,7 @@ class UserDao implements
      */
     public function softDeleteUser($user)
     {
-        User::where('id', $user->id)->update([
+        return User::where('id', $user->id)->update([
             'deleted_user_id' => $user['deleted_user_id'],
             'deleted_at' => $user['deleted_at'],
         ]);
@@ -72,7 +72,7 @@ class UserDao implements
      */
     public function updatePassword($passwords)
     {
-        User::where('id', auth()->user()->id)->update(['password' => Hash::make($passwords['newPassword'])]);
+        return User::where('id', auth()->user()->id)->update(['password' => Hash::make($passwords['newPassword'])]);
     }
 
     /**
@@ -81,10 +81,10 @@ class UserDao implements
      */
     public function searchUserList($name, $email, $start_date, $end_date)
     {
-        return User::whereNull('deleted_user_id')->where(function ($users) use ($name, $email, $start_date, $end_date) {
+        return User::active()->where(function ($users) use ($name, $email, $start_date, $end_date) {
             $users->where('name', 'LIKE', '%' . $name . '%')
                 ->where('email', 'LIKE', '%' . $email . '%');
-            if ($start_date != null or $start_date != "") $users->whereBetween('created_at', '>=', $start_date);
+            if ($start_date != null or $start_date != "") $users->where('created_at', '>=', $start_date);
             if ($end_date != null or $end_date != "") $users->where('created_at', '<=', $end_date);
         })->get();
     }

@@ -9,6 +9,7 @@ use App\Post;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Contracts\Services\PostServiceInterface;
+use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
@@ -44,13 +45,13 @@ class PostController extends Controller
      */
     public function create(Post $post)
     {
-        return view('posts.create', compact('post'));
+        return view('posts.postCreate', compact('post'));
     }
 
     public function postCreateConfirm(PostFormRequest $request)
     {
         $post = new Post($request->all());
-        return view('posts.createConfirm', compact('post'));
+        return view('posts.postCreateConfirm', compact('post'));
     }
 
     /**
@@ -62,10 +63,14 @@ class PostController extends Controller
     public function store(PostFormRequest $request)
     {
         $post = new Post($request->all());
-        $this->postServiceInterface->registerPost($post);
-
-        return redirect()->route('posts.postlist')
-            ->with('success', 'Product created successfully.');
+        $createdPost = $this->postServiceInterface->registerPost($post);
+        if ($createdPost) {
+            return redirect()->route('posts.index')
+                ->with('success', 'Post created successfully.');
+        } else {
+            return redirect()->route('posts.index')
+                ->with('error', 'Post not created');
+        }
     }
 
     /**
@@ -94,7 +99,6 @@ class PostController extends Controller
     {
         $post = new Post($request->all());
         $post->status = $request->has('status') ? 1 : 0;
-
         return view('posts.postUpdateConfirm', compact('post'));
     }
 
@@ -109,10 +113,14 @@ class PostController extends Controller
     {
         $post = new Post($request->all());
         $post->status = $request->has('status') ? 1 : 0;
-        $this->postServiceInterface->editPost($post);
-
-        return redirect()->route('posts.postlist')
-            ->with('success', 'Product update successfully.');
+        $updated = $this->postServiceInterface->editPost($post);
+        if ($updated == 1) {
+            return redirect()->route('posts.index')
+                ->with('success', 'Post update successfully.');
+        } else {
+            return redirect()->route('posts.index')
+                ->with('error', 'Post not updated.');
+        }
     }
 
     /**
@@ -123,9 +131,14 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $this->postServiceInterface->deletePost($post);
-        return redirect()->route('posts.postlist')
-            ->with('success', 'Product deleted successfully');
+        $deleted = $this->postServiceInterface->deletePost($post);
+        if ($deleted == 1) {
+            return redirect()->route('posts.index')
+                ->with('success', 'Post deleted successfully');
+        } else {
+            return redirect()->route('posts.index')
+                ->with('error', 'Post not deleted');
+        }
     }
 
     /**
@@ -138,6 +151,7 @@ class PostController extends Controller
     {
         $keyword = $request->input('keyword');
         $posts = $this->postServiceInterface->searchPost($keyword);
+        (Log::info($posts));
         return view('posts.postlist', compact('posts'));
     }
     /**
@@ -156,6 +170,6 @@ class PostController extends Controller
     public function upload(PostFormRequest $request)
     {
         Excel::import(new PostImport, $request->file('file')->store('temp'));
-        return redirect()->route('posts.postlist');
+        return redirect()->route('posts.index');
     }
 }
